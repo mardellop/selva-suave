@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selva suave</title>
+  <meta name="description" content="Ecommerce de suscripción mensual destinado al cuidado de plantas de interior.">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/x-icon" href="favicon-selva-suave.png">
+</head>
+<body>
+  <audio id="bg-music" src="musica-fondo.mp3" preload="auto" loop></audio>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="pre-brand">Selva suave</div>
+    <div class="pre-seed-wrap">
+      <div class="pre-seed-glow"></div>
+      <div id="seed-canvas-container"></div>
+      <div class="pre-seed-status" id="pre-seed-status"></div>
+    </div>
+
+    <div class="pre-bar-track">
+      <div class="pre-bar-fill" id="pre-bar"></div>
+    </div>
+    <div class="pre-pct" id="pre-pct">0%</div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="#" class="logo">
+      <img src="logo.png" alt="Logo Selva suave" style="width: 25px; border-radius: 6px;">
+      Selva suave
+    </a>
+    <div class="header-right">
+      <a href="#idea">La idea</a>
+      <a href="#datos-sector">Datos del sector</a>
+      <a href="#razones">Por qué funciona</a>
+      <a href="#ia">Uso de la IAG</a>
+      <a href="#autoria">Autoría del trabajo</a>
+      <button id="music-toggle" class="music-toggle-btn" type="button" aria-label="Control de música" title="Música ambiental">
+        <span class="music-bars">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+          <span class="bar bar-4"></span>
+        </span>
+        <span class="music-text">Música</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STORYTELLING STAGE -->
+  <div class="story-stage" id="story-stage">
+
+    <!-- ─── SCENE 1: "TUS PLANTAS DE INTERIOR MERECEN VIVIR" ─── -->
+    <div class="scene" id="s1">
+      <div class="scene-img si1 behind" style="width:320px; height:400px; left:5%; top:15%;">
+        <img src="planta-interior-apagada.jpg">
+      </div>
+      <div class="scene-img si2 behind" style="width:320px; height:400px; right:5%; top:20%;">
+        <img src="planta-interior-viva.jpg">
+      </div>
+      <div class="scene-text st" style="font-size:clamp(2rem, 6vw, 4.5rem);">
+        TUS PLANTAS DE INTERIOR<br>MERECEN VIVIR<br><em>NO SOLO SOBREVIVIR</em>
+      </div>
+
+      <div class="scene-scroll-hint" id="scene1-scroll-hint">
+        <span class="scroll-hint-text">Desliza para comenzar</span>
+        <svg class="scroll-hint-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ─── SCENE 2: "TU KIT BOTÁNICO" ─── -->
+    <div class="scene" id="s2">
+      <div class="scene-img si1 behind" style="width:340px; height:440px; left:3%; bottom:8%;">
+        <img src="selva-suave-kit.jpg" alt="Kit Selva suave">
+      </div>
+      <div class="scene-img si2 behind" style="width:280px; height:350px; right:4%; top:10%;">
+        <img src="selva-kit-abierto.jpg">
+      </div>
+      <div class="scene-text st" style="font-size:clamp(2rem, 6vw, 4.5rem);">
+        TU CASA, MÁS VIVA MES A MES<br>RECIBE TU KIT BOTÁNICO MENSUAL<br><em>DILE ADIÓS A BUSCAR ABONOS</em>
+      </div>
+    </div>
+
+    <!-- ─── SCENE 3: "QUÉ INCLUYE EL KIT" ─── -->
+    <div class="scene" id="s3">
+      <div class="scene-img si1 behind" style="width:360px; height:420px; left:8%; top:12%;">
+        <img src="herramienta-kit.jpg">
+      </div>
+      <div class="scene-img si2 infront" style="width:250px; height:310px; right:8%; bottom:12%;">
+        <img src="nutricion-tierra.jpeg" alt="Nutrición">
+      </div>
+      <div class="scene-text st kit-text-block">
+        <h3 class="kit-title">¿QUÉ INCLUYE EL KIT?</h3>
+        <ul class="kit-list">
+          <li>- Nutrición líquida</li>
+          <li>- Sustrato y tierra</li>
+          <li>- Herramienta del mes</li>
+          <li>- Ayuda experta</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── SCENE 4: "PRECIO/MES" ─── -->
+    <div class="scene" id="s4">
+      <div class="scene-img si1 behind" style="width:380px; height:480px; max-height:calc(100vh - 140px); left:3%; top:clamp(85px, 14vh, 125px);">
+        <img src="kit-selva-suave.jpeg" alt="Caja Selva suave + planta">
+      </div>
+      <div class="scene-text st" style="font-size:clamp(3rem, 10vw, 7rem);">
+        <em>24,99€</em><br>AL MES
+      </div>
+    </div>
+
+    <!-- ─── SCENE 5: "TU VIDA EN UNA CAJA" ─── -->
+    <div class="scene" id="s5">
+      <span id="idea" style="position:absolute; top:0; left:0; width:0; height:0; pointer-events:none; visibility:hidden;"></span>
+      <div class="scene-img si1 behind" style="width:260px; height:330px; right:6%; top:10%;">
+        <img src="logo.png" alt="Logo Selva suave">
+      </div>
+      <div class="scene-img si2 behind" style="width:300px; height:380px; left:5%; bottom:10%;">
+        <img src="plantas-casa.jpeg" alt="Plantas en una casa">
+      </div>
+      <div class="scene-text st" style="font-size:clamp(2rem, 6.5vw, 5rem); margin-left: -50px; margin-bottom: 200px;">
+        ¿Y SI DARLE VIDA A TU CASA<br><em>CUPIERA EN UNA CAJA?</em>
+      </div>
+      <div class="scene-subtext ss" style="bottom:12%; left:51%; transform:translateX(-50%); max-width:min(600px, 86vw); text-align:justify; color:#000">
+        Selva Suave es un ecommerce D2C de suscripción mensual pensado para aquellas personas que viven en pisos pequeños y no quieren que se les mueran las plantas. Cada mes, la marca enviará una caja con lo necesario para cuidarlas (nutrición, sustrato, alguna herramienta y un código QR para hablar con un experto por si surgen dudas). De esta manera, el cliente puede mantener la casa bonita sin complicarse la vida y sin tener que llenar el trastero de sacos gigantes. A continuación, veremos las razones de por qué este ecommerce puede funcionar.
+      </div>
+    </div>
+  </div>
+
+  <div id="scroll-spacer"></div>
+
+  <!-- DATOS DEL SECTOR -->
+  <div class="post-story" id="post-story">
+    <h2 class="stats-heading" id="datos-sector">DATOS CLAVE DEL SECTOR</h2>
+    <div class="ps-stats">
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="44" data-count-suffix=" años" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">Edad media del comprador</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="81" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">Hogares con terraza, patio o jardín (53% pisos urbanos)</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="80" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">Compradores activos de plantas</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="57" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">ADQUIERE COMPLEMENTOS DE CUIDADO Y JARDINERÍA</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="76" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">CONSUME SUSTRATOS</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="73" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">CONSUME ABONOS</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="70" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">COMPRA CERÁMICA Y MACETAS</div>
+      </div>
+      <div class="ps-stat">
+        <div class="ps-stat-num" data-count-to="50" data-count-suffix="%" data-count-decimals="0">0</div>
+        <div class="ps-stat-label">Usa productos fitosanitarios (fungicidas o insecticidas)</div>
+      </div>
+    </div>
+    <p class="stats-footer" style="font-size: 12.5px;">Fuente: magazine, G. (2025). Radiografía de los consumidores de Plantas y Flores en España. Garden Magazine, Jardinería, Bricolaje y Decoración - GardenMagazine.es</p>
+
+    <!-- POR QUÉ FUNCIONARÍA SELVA SUAVE -->
+    <div class="ps-section-header rv" id="razones">
+      <h2 class="ps-section-title">Razones por las que Selva Suave puede funcionar</h2>
+    </div>
+
+    <div class="ps-split">
+      <h2 class="ps-heading ps-split-title rv">1. Porque “hogar y decoración” y “bricolaje y jardín” son categorías de compra consolidadas.</h2>
+      <div>
+        <p class="ps-body rv">
+          Según los datos del estudio de IAB Spain, el 38% adquiere productos de “Hogar y decoración” de forma online, siendo una de las categorías más compradas por internet. Actualmente, existe un grupo de personas que invierten su dinero en comprar plantas de interior para decorar su hogar.
+        </p>
+<p class="ps-body rv">
+          Asimismo, el 25% ha comprado productos de bricolaje y jardín en 2025, lo que demuestra que hay interés en adquirir este tipo de productos a través de internet. Los suministros de jardinería tradicionales, como los sacos de tierra de 10-20L, las herramientas o los fertilizantes, son pesados e incómodos de transportar. Sin embargo, gracias al comercio electrónico, Selva suave elimina esa barrera, ya que ofrece kits mensuales de reducidas dimensiones y fáciles de transportar.
+        </p>
+<p class="ps-body rv">
+Por tanto, Selva suave se posiciona en la intersección entre decoración (la planta luce bien) y el cuidado (las herramientas y nutrientes para mantener la planta sana).
+        </p>
+      </div>
+      <div class="ps-img rv">
+        <img src="estudio-iab.png" alt="Estudio de IAB Spain">
+      </div>
+    </div>
+
+    <div class="ps-split">
+      <h2 class="ps-heading ps-split-title rv">2. Porque con el Live Shopping se resuelven dudas y se pueden multiplicar las ventas.</h2>
+      <div class="ps-img rv">
+        <img src="live-shopping.png">
+      </div>
+      <div>
+        <p class="ps-body rv">
+          Selva suave va dirigido a un público de entre 25 y 55 años, un segmento que  decide el 75% de sus compras basándose en lo que ve en redes sociales. Además, como el 93% de los usuarios realiza compra mientras consume contenido de entretenimiento, el unboxing del kit y el cuidado botánico conecta y convierten casi sin darse cuenta, ya que es un contenido muy visual.
+        </p>
+<p class="ps-body rv">
+          Gracias al Live Shopping se puede acortar el customer journey, ya que se resuelven posibles objeciones al mostrar en tiempo real cómo usar la nutrición líquida del kit o cómo identificar plagas con el chatbot de WhatsApp. Asimismo, el botón flotante estimula la compra impulsiva y puede alcanzar tasas de conversión de hasta el 30%.
+        </p>
+<p class="ps-body rv">
+          También se utilizaría el programa de afiliados de TikTok Shop para colaborar con creadores. De esta forma, la marca puede conectar con el público objetivo e impulsar las ventas.
+        </p>
+      </div>
+    </div>
+
+    <div class="ps-split">
+      <h2 class="ps-heading ps-split-title rv">3. Porque integra la inteligencia artificial y chatbot en WhatsApp</h2>
+      <div>
+        <p class="ps-body rv">
+Gracias a estas tecnologías, la marca podría optimizar costes operativos y escalar el negocio.
+        </p>
+<p class="ps-body rv">
+Al igual que en el caso de Vilma Núñez, Selva suave podría publicar un reel en Instagram explicando qué hace la marca y qué incluye el kit botánico. Al final del vídeo, se animaría a la audiencia a comentar la palabra “KIT” para obtener un 15% de descuento. Automáticamente, el usuario recibiría un mensaje privado con un enlace directo al pago. Además, teniendo en cuenta que el 80% de las compras online se realizan por smartphone y que el 93% consume redes sociales, cerrar ventas directamente en el chat de Instagram evita perder clientes al llevarlos a una web externa.
+        </p>
+<p class="ps-body rv">
+El kit incluye también un código QR para que los clientes contacten con un chatbot en WhatsApp. Allí, se resolverán al instante las dudas más frecuentes sobre el cuidado, el riego o la identificación de plagas. La IA se encarga de filtra y responder estas consultas, y deriva al soporte humano aquellos casos más complejos que necesiten una atención personalizada.
+        </p>
+      </div>
+      <div class="rv" style="display:flex; justify-content:center;">
+        <div class="wa-mockup-wrapper">
+          <div class="wa-phone">
+            <!-- Dynamic Island / Speaker notch -->
+            <div class="wa-dynamic-island">
+              <span class="wa-island-camera"></span>
+            </div>
+
+            <!-- Top iOS status bar -->
+            <div class="wa-status-bar">
+              <span class="wa-status-time">12:13 PM</span>
+              <div class="wa-status-icons">
+                <svg width="15" height="11" viewBox="0 0 17 12" fill="currentColor">
+                  <path d="M1 9h2V3H1v6zm4 2h2V1H5v10zm4 0h2V0H9v11zm4 0h2V0h-2v11z"/>
+                </svg>
+                <svg width="14" height="11" viewBox="0 0 16 12" fill="currentColor">
+                  <path d="M8 2.5C5.2 2.5 2.7 3.6.8 5.4L8 12.5l7.2-7.1C13.3 3.6 10.8 2.5 8 2.5z"/>
+                </svg>
+                <span class="wa-battery"><span class="wa-battery-fill"></span></span>
+              </div>
+            </div>
+
+            <!-- WhatsApp Chatbot -->
+            <div class="wa-bar">
+              <div class="wa-bar-left">
+                <svg class="wa-back-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <div class="wa-av">
+                  <img src="favicon-selva-suave.png" alt="Selva suave logo" />
+                </div>
+                <div class="wa-contact-info">
+                  <div class="wa-nm">Selbot</div>
+                  <div class="wa-st">en línea</div>
+                </div>
+              </div>
+              <div class="wa-bar-actions">
+                <button type="button" class="wa-icon-btn" aria-label="Llamada">
+                  <svg width="17" height="13" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.44-5.15-3.75-6.59-6.59l1.97-1.57c.28-.28.37-.68.25-1.02A11.36 11.36 0 0 1 8.96 4.3a.996.996 0 0 0-.99-.99H4.5c-.56 0-1.03.45-1 1.01C3.89 13.9 10.11 20.1 18.99 20.5c.56.03 1.01-.44 1.01-1v-3.13c0-.55-.45-.99-.99-.99z"/>
+                  </svg>
+                </button>
+                <button type="button" class="wa-icon-btn" aria-label="Más opciones" id="wa-reset-btn" title="Reiniciar conversación">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="2"/>
+                    <circle cx="12" cy="12" r="2"/>
+                    <circle cx="12" cy="19" r="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="wa-body" id="wa-body">
+            </div>
+            <div class="wa-footer">
+              <button type="button" class="wa-footer-icon" aria-label="Emojis">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+              </button>
+              <div class="wa-input-pill">
+                <input type="text" id="wa-input-field" placeholder="Escribe un mensaje o pregunta..." autocomplete="off" />
+                <button type="button" class="wa-footer-icon" aria-label="Adjuntar archivo">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                  </svg>
+                </button>
+                <button type="button" class="wa-footer-icon" aria-label="Cámara">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                </button>
+              </div>
+              <button type="button" class="wa-mic-btn" id="wa-send-btn" aria-label="Enviar">
+                <svg id="wa-send-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ps-split">
+      <h2 class="ps-heading ps-split-title rv">4. Porque responde a las principales exigencias y prioridades del consumidor actual.</h2>
+      <div class="ps-img rv">
+        <img src="drivers-compra.png">
+      </div>
+      <div>
+        <p class="ps-body rv">
+          Según el estudio anual de ecommerce en España de IAB Spain, existen diferentes factores que impulsan al consumidor a decantarse por una plataforma de comercio electrónico. En primer lugar, los drivers económicos son determinantes para el 71% de los compradores. Por eso, Selva Suave garantiza la transparencia total de precios, eliminando cargos ocultos o costes inesperados.
+</p>
+        <p class="ps-body rv">
+En segundo lugar, el 64% de los usuarios consideran que la logística y el envío son un aspecto importante para comprar en un ecommerce. Selva suave comercializa un kit con dimensiones estandarizadas, por lo que se simplifica la cadena para asegurar plazos de entrega rápidos y un seguimiento transparente en la última milla.
+        </p>
+        <p class="ps-body rv">
+Asimismo, para el 63% de los consumidores consideran la atención post-venta como un factor decisivo. Por eso, la marca creó Selbot, un asistente de WhatsApp automatizado, respaldado por el soporte continuo de especialistas, lo que garantiza un acompañamiento cercano desde el primer momento.
+</p>
+        <p class="ps-body rv">
+Por último, el 52% de los compradores valoran positivamente los ecommerce que estén altamente especializados en lugar de ser generalistas. Por esta razón, Selva Suave cuenta con una hiperespecialización.
+        </p>
+      </div>
+    </div>
+
+    <!-- ─── USO DE LA IAG ─── -->
+    <div class="ps-section" id="ia">
+      <div class="ia-header">
+        <h2 class="ps-heading" style="margin-bottom:0.6rem;">Uso de la inteligencia artificial generativa</h2>
+        <p class="ia-subtitle">
+          <span class="ia-subtitle-hint">
+            <svg class="ia-flip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+            </svg>
+            Pasa el ratón sobre cada tarjeta para conocer más detalles
+          </span>
+        </p>
+      </div>
+
+      <div class="ia-cards-grid">
+        <!-- Tarjeta 1 -->
+        <div class="ia-card" tabindex="0" role="button" aria-label="Tarjeta de uso de IA 1: pasa el ratón para más detalles">
+          <div class="ia-card-inner">
+            <div class="ia-card-front">
+              <div class="ia-card-top">
+                <span class="ia-card-num">01</span>
+              </div>
+              <div class="ia-card-center">
+                <div class="ia-card-icon-wrap">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <h3 class="ia-card-title">Creación de imágenes + música de fondo</h3>
+              </div>
+            </div>
+            <div class="ia-card-back">
+              <div class="ia-card-top">
+                <span class="ia-card-num back">01</span>
+              </div>
+              <div class="ia-card-center back">
+                <h4 class="ia-card-back-title">Creación de imágenes + música de fondo</h4>
+                <div class="ia-card-divider"></div>
+                <p class="ia-card-text">
+                  - <strong>Herramienta y versión utilizada:</strong> Google Gemini 3 (medio).
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Propósito del uso:</strong> Generación de imágenes para el desarrollo visual de la marca (logotipo y diseño del producto), así como la generación de simulaciones visuales para ilustrar diferentes momentos de una sesión de live shopping. También utilicé Gemini 3 para crear la música de fondo.
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Método de verificación:</strong> Las imágenes generadas fueron revisadas manualmente para garantizar que no contenían elementos erróneos. En alguna ocasión fue necesario pedirle a la IA que cambiase ciertos aspectos de la imagen para que se ajustara a lo que yo quería. Asimismo, también modifiqué algunas imágenes a mano, cuando la IA no era capaz de realizar lo que yo le pedía. También le pedí que me sugiriera nombres para la marca, de los cuales ninguno me gustó al 100%, así que fusioné dos nombres para que, en conjunto, sonara bien. En cuanto a la música de fondo, tuve que editar y cortar ciertas partes que no me gustaban.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="ia-card" tabindex="0" role="button" aria-label="Tarjeta de uso de IA 2: pasa el ratón para más detalles">
+          <div class="ia-card-inner">
+            <div class="ia-card-front">
+              <div class="ia-card-top">
+                <span class="ia-card-num">02</span>
+              </div>
+              <div class="ia-card-center">
+                <div class="ia-card-icon-wrap">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect>
+                    <line x1="2" y1="7" x2="22" y2="7"></line>
+                    <circle cx="5" cy="5" r="0.5" fill="currentColor"></circle>
+                    <circle cx="8" cy="5" r="0.5" fill="currentColor"></circle>
+                    <circle cx="11" cy="5" r="0.5" fill="currentColor"></circle>
+                    <path d="m9 13 2 2-2 2"></path>
+                    <path d="m15 13-2 2 2 2"></path>
+                    <line x1="12" y1="17" x2="12" y2="13"></line>
+                  </svg>
+                </div>
+                <h3 class="ia-card-title">Desarrollo y diseño web</h3>
+              </div>
+            </div>
+            <div class="ia-card-back">
+              <div class="ia-card-top">
+                <span class="ia-card-num back">02</span>
+              </div>
+              <div class="ia-card-center back">
+                <h4 class="ia-card-back-title">Desarrollo y diseño web</h4>
+                <div class="ia-card-divider"></div>
+                <p class="ia-card-text">
+                  - <strong>Herramienta y versión utilizada:</strong> Claude (Sonnet 4.6).
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Propósito del uso:</strong> Generación de la estructura base del sitio web en HTML/CSS y diseño de las animaciones iniciales de la interfaz.
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Método de verificación:</strong> La estructura generada por Claude fue revisada y modificada manualmente a través de los archivos .html y .css. De esta manera, pude personalizar el diseño, incorporar todos los textos y argumentos de por qué funcionaría mi ecommerce y garantizar que el resultado final fuera visualmente atractivo y que garantizara una buena experiencia de usuario. Por tanto, Claude me dio la base sobre la cual fui trabajando.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="ia-card" tabindex="0" role="button" aria-label="Tarjeta de uso de IA 3: pasa el ratón para más detalles">
+          <div class="ia-card-inner">
+            <div class="ia-card-front">
+              <div class="ia-card-top">
+                <span class="ia-card-num">03</span>
+              </div>
+              <div class="ia-card-center">
+                <div class="ia-card-icon-wrap">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
+                    <line x1="9" y1="21" x2="15" y2="21"></line>
+                    <line x1="10" y1="18" x2="14" y2="18"></line>
+                  </svg>
+                </div>
+                <h3 class="ia-card-title">Ideas para enfocar el ecommerce</h3>
+              </div>
+            </div>
+            <div class="ia-card-back">
+              <div class="ia-card-top">
+                <span class="ia-card-num back">03</span>
+              </div>
+              <div class="ia-card-center back">
+                <h4 class="ia-card-back-title">Ideas para enfocar el ecommerce</h4>
+                <div class="ia-card-divider"></div>
+                <p class="ia-card-text">
+                  - <strong>Herramienta y versión utilizada:</strong> Microsoft Copilot (modelo GPT-5).
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Propósito del uso:</strong> Generación de ideas para crear un ecommerce.
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Método de verificación:</strong> Las ideas generadas por la IA las contrasté con las tendencias reales del mercado y de demanda para saber si las personas tendrían interés en comprar en el ecommerce creado. Una vez visto que el bricolaje y el jardín puede tener demanda, fui desarrollando la idea y justificándola en base a mis conocimientos y datos vistos en clase.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 4 -->
+        <div class="ia-card" tabindex="0" role="button" aria-label="Tarjeta de uso de IA 4: pasa el ratón para más detalles">
+          <div class="ia-card-inner">
+            <div class="ia-card-front">
+              <div class="ia-card-top">
+                <span class="ia-card-num">04</span>
+              </div>
+              <div class="ia-card-center">
+                <div class="ia-card-icon-wrap">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <h3 class="ia-card-title">Redacción de contenidos y textos</h3>
+              </div>
+            </div>
+            <div class="ia-card-back">
+              <div class="ia-card-top">
+                <span class="ia-card-num back">04</span>
+              </div>
+              <div class="ia-card-center back">
+                <h4 class="ia-card-back-title">Redacción de contenidos y textos</h4>
+                <div class="ia-card-divider"></div>
+                <p class="ia-card-text">
+                  - <strong>Herramienta y versión utilizada:</strong> ChatGPT (OpenAI GPT-4o).
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Propósito del uso:</strong> Redacción y estructuración de los textos comerciales del proyecto, definición de la propuesta de valor del kit de suscripción y elaboración de los diálogos y respuestas del chatbot de WhatsApp.
+                </p>
+                <p class="ia-card-text">
+                  - <strong>Método de verificación:</strong> Todos los textos y respuestas generados fueron leídos, corregidos y adaptados manualmente al tono cercano, empático y natural de la marca Selva Suave. Se verificó la coherencia con los datos del mercado y se ajustaron los consejos botánicos para garantizar su exactitud.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── AUTORÍA ─── -->
+    <div class="cta-section" id="autoria">
+      <h2 class="ps-heading rv" style="color:var(--c-cream); text-align:center;">
+        Realidad digital | Trabajo realizado por<br><em style="color:var(--c-cream);">invertir en verde</em>
+      </h2>
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer class="site-footer">
+      <div class="footer-socials">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+        </a>
+        <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" class="social-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.86.11V9.4a6.33 6.33 0 0 0-.86-.06A6.34 6.34 0 0 0 3.1 15.68a6.34 6.34 0 0 0 10.82 4.48c1.68-1.68 2.4-3.56 2.4-6.49V8.75a8.2 8.2 0 0 0 4.77 1.52V6.82a4.84 4.84 0 0 1-1.5-.13z"/>
+          </svg>
+        </a>
+        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="social-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>
+        </a>
+        <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" class="social-icon">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.291 1.199-.334 1.357-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+      <div class="footer-copy">
+        Realidad digital, oportunidades, factores competitivos y estrategia; Cómo emprender con éxito · Selva suave · © 2026
+      </div>
+    </footer>
+
+  </div><!-- /post-story -->
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
