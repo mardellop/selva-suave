@@ -1,10 +1,3 @@
-﻿/**
- * BOTÃNICA CLUB â€” SCROLL-DRIVEN STORYTELLING ENGINE
- * Pinned viewport with GSAP-scrubbed master timeline.
- * Text scales, images fly in/out, scenes crossfade â€” all driven by scroll.
- */
-
-// Desactivar la restauraciÃ³n automÃ¡tica de scroll del navegador para empezar siempre arriba al recargar
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
@@ -40,9 +33,7 @@ function updateWhatsAppStatusTime() {
   }
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   BACKGROUND AUDIO ENGINE
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* BACKGROUND AUDIO ENGINE */
 let audioStarted = false;
 let audioFadeReq = null;
 let userDisabledMusic = false;
@@ -58,14 +49,14 @@ function initAudio() {
 
   audio.volume = 0;
 
-  // Intentar reproducir mÃºsica inmediatamente al cargar la web
+  // Intentar reproducir música inmediatamente al cargar la web
   musicAllowedToPlay = true;
   if (!userDisabledMusic) {
     audio.play().then(() => {
       fadeInAudio(audio, BG_MUSIC_VOLUME, BG_MUSIC_FADE_DURATION);
       updateMusicUI(true);
     }).catch(() => {
-      // El navegador bloqueÃ³ el autoplay: se activa con la primera interacciÃ³n del usuario
+      // El navegador bloqueó el autoplay: se activa con la primera interacción del usuario
     });
   }
 
@@ -99,14 +90,14 @@ function updateMusicUI(isPlaying) {
   const textEl = toggleBtn.querySelector('.music-text');
   if (isPlaying) {
     toggleBtn.classList.add('is-playing');
-    toggleBtn.setAttribute('title', 'Desactivar mÃºsica de fondo');
+    toggleBtn.setAttribute('title', 'Desactivar música de fondo');
     toggleBtn.setAttribute('aria-pressed', 'true');
-    if (textEl) textEl.textContent = 'MÃºsica: On';
+    if (textEl) textEl.textContent = 'Música: On';
   } else {
     toggleBtn.classList.remove('is-playing');
-    toggleBtn.setAttribute('title', 'Activar mÃºsica de fondo');
+    toggleBtn.setAttribute('title', 'Activar música de fondo');
     toggleBtn.setAttribute('aria-pressed', 'false');
-    if (textEl) textEl.textContent = 'MÃºsica: Off';
+    if (textEl) textEl.textContent = 'Música: Off';
   }
 }
 
@@ -155,7 +146,7 @@ function playBackgroundMusic() {
   if (userDisabledMusic || !musicAllowedToPlay) return;
   const audio = document.getElementById('bg-music');
   if (!audio) return;
-  if (!audio.paused) return; // Ya estÃ¡ sonando fluidamente
+  if (!audio.paused) return; // Ya está sonando fluidamente
   audioStarted = true;
 
   const playPromise = audio.play();
@@ -164,7 +155,7 @@ function playBackgroundMusic() {
       fadeInAudio(audio, BG_MUSIC_VOLUME, BG_MUSIC_FADE_DURATION);
       updateMusicUI(true);
     }).catch(() => {
-      // PolÃ­tica de Autoplay del navegador: esperar al primer toque o interacciÃ³n
+      // Polí­tica de Autoplay del navegador: esperar al primer toque o interacción
       const triggerPlayback = () => {
         if (userDisabledMusic || !musicAllowedToPlay) return;
         audio.play().then(() => {
@@ -212,9 +203,7 @@ function toggleBackgroundMusic() {
   }
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   HEADER SCROLL BACKGROUND CONTROLLER
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* HEADER SCROLL BACKGROUND CONTROLLER */
 function initHeaderScroll() {
   const header = document.querySelector('.site-header');
   if (!header) return;
@@ -231,9 +220,7 @@ function initHeaderScroll() {
   onScroll();
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   HEADER NAVIGATION CONTROLLER (SMOOTH SCROLL & SCENE JUMPS)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* HEADER NAVIGATION CONTROLLER (SMOOTH SCROLL & SCENE JUMPS) */
 function initHeaderNav() {
   const header = document.querySelector('.site-header');
   if (!header) return;
@@ -252,7 +239,7 @@ function initHeaderNav() {
         return;
       }
 
-      // 1. "La idea" (#idea o #s5) -> PosiciÃ³n exacta y resting de la Escena 5
+      // 1. "La idea" (#idea o #s5) -> Posición exacta y resting de la Escena 5
       if (href === '#idea' || href === '#s5' || href === '#la-idea') {
         e.preventDefault();
         const stage = document.getElementById('story-stage');
@@ -314,9 +301,7 @@ function initHeaderNav() {
   });
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   PRELOADER WITH 3D SEED GERMINATION
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* PRELOADER */
 function initPreloader() {
   const el = document.getElementById('preloader');
   const bar = document.getElementById('pre-bar');
@@ -339,7 +324,7 @@ function initPreloader() {
     { at: 0,  text: 'Preparando la tierra...' },
     { at: 23, text: 'Seleccionando el abono perfecto...' },
     { at: 65, text: 'Empaquetando la caja del mes...' },
-    { at: 88, text: 'Â¡Bienvenido a casa!' }
+    { at: 88, text: '¡Bienvenido a casa!' }
   ];
 
   // Extended loading duration (+5 seconds, total ~7.8s)
@@ -388,9 +373,7 @@ function initPreloader() {
   requestAnimationFrame(tick);
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   3D DIGITAL SEED GERMINATION ENGINE (THREE.JS)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* 3D DIGITAL SEED GERMINATION ENGINE (THREE.JS) */
 function init3DSeed() {
   const container = document.getElementById('seed-canvas-container');
   if (!container || typeof THREE === 'undefined') return null;
@@ -776,9 +759,7 @@ function playScene1Entrance() {
   window.addEventListener('scroll', onFirstScroll, { passive: true });
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   BOOT â€” Register GSAP, build storytelling timeline
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* BOOT Register GSAP, build storytelling timeline */
 function boot() {
   gsap.registerPlugin(ScrollTrigger);
   if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger.clearScrollMemory) {
@@ -798,11 +779,7 @@ function boot() {
   requestAnimationFrame(() => requestAnimationFrame(() => initSceneAutoScroll()));
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   AUTO-SCROLL POR ESCENAS â€” navega automÃ¡ticamente de
-   una escena a la siguiente al detectar cualquier gesto
-   de scroll, y se detiene cuando el texto/imagen reposa.
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* AUTO-SCROLL POR ESCENAS */
 function initSceneAutoScroll() {
   const spacer     = document.getElementById('scroll-spacer');
   const postStory  = document.getElementById('post-story');
@@ -813,7 +790,7 @@ function initSceneAutoScroll() {
 
   const st = tl.scrollTrigger;
 
-  /* â”€â”€ Calcula el offset de scroll que corresponde a cada label â”€â”€ */
+  /*  Calcula el offset de scroll que corresponde a cada label  */
   function labelToScrollY(labelName) {
     const labelTime = tl.labels[labelName];
     if (labelTime === undefined) return null;
@@ -832,13 +809,13 @@ function initSceneAutoScroll() {
 
   const SCENE_COUNT        = sceneScrollY.length;   // 5
   const POST_STORY_TOP     = () => postStory.getBoundingClientRect().top + window.pageYOffset;
-  const POST_STORY_GUARD   = 80;   // px desde la cima del post-story donde aÃºn captamos scroll-up
+  const POST_STORY_GUARD   = 80;   // px desde la cima del post-story donde aún captamos scroll-up
 
   let currentScene         = 0;
   let isTransitioning      = false;
   let transitionTween      = null;
 
-  /* â”€â”€ Sincroniza currentScene con la posiciÃ³n real de scroll â”€â”€ */
+  /*  Sincroniza currentScene con la posición real de scroll  */
   function syncCurrentScene() {
     const y = window.pageYOffset;
     let idx = 0;
@@ -848,7 +825,7 @@ function initSceneAutoScroll() {
     currentScene = idx;
   }
 
-  /* â”€â”€ Anima el scroll hasta el offset objetivo y llama onDone â”€â”€ */
+  /*  Anima el scroll hasta el offset objetivo y llama onDone  */
   function scrollToY(targetY, onDone) {
     if (transitionTween) { transitionTween.kill(); }
     const obj = { y: window.pageYOffset };
@@ -869,7 +846,7 @@ function initSceneAutoScroll() {
     });
   }
 
-  /* â”€â”€ TransiciÃ³n a escena N (0-4) â”€â”€ */
+  /* Transición a escena N (0-4)  */
   function goToScene(idx) {
     idx = Math.max(0, Math.min(SCENE_COUNT - 1, idx));
     if (isTransitioning) return;
@@ -878,16 +855,16 @@ function initSceneAutoScroll() {
     scrollToY(sceneScrollY[idx], () => syncCurrentScene());
   }
 
-  /* â”€â”€ TransiciÃ³n al inicio del post-story â”€â”€ */
+  /*  Transición al inicio del post-story  */
   function goToPostStory() {
     if (isTransitioning) return;
     isTransitioning = true;
     scrollToY(POST_STORY_TOP() - 10, () => { isTransitioning = false; });
   }
 
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€
   // WHEEL
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€
   window.addEventListener('wheel', (e) => {
     const y          = window.pageYOffset;
     const postTop    = POST_STORY_TOP();
@@ -908,7 +885,7 @@ function initSceneAutoScroll() {
         if (currentScene < SCENE_COUNT - 1) {
           goToScene(currentScene + 1);
         } else {
-          // Ãšltima escena: va al post-story
+          // íšltima escena: va al post-story
           goToPostStory();
         }
       } else {
@@ -929,12 +906,9 @@ function initSceneAutoScroll() {
         scrollToY(sceneScrollY[SCENE_COUNT - 1], () => syncCurrentScene());
       }
     }
-    // MÃ¡s abajo en post-story: scroll nativo, sin interceptar
   }, { passive: false });
 
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // TOUCH SWIPE
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+ 
   let touchStartY = 0;
   const SWIPE_THRESHOLD = 40;
 
@@ -973,9 +947,7 @@ function initSceneAutoScroll() {
     }
   }, { passive: false });
 
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // TECLADO (flechas, espacio, re/avpag)
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
   window.addEventListener('keydown', (e) => {
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
@@ -1008,25 +980,13 @@ function initSceneAutoScroll() {
     }
   });
 
-  // Sincroniza el Ã­ndice si el usuario llega desde el header nav o skipBtn
+  // Sincroniza el í­ndice si el usuario llega desde el header nav o skipBtn
   window.addEventListener('scroll', () => {
     if (!isTransitioning) syncCurrentScene();
   }, { passive: true });
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   STORYTELLING TIMELINE â€” The Heart of the Experience
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-
-   Each "scene" is a sequence of GSAP tweens on a master
-   timeline that is scrubbed by scroll position.
-   The stage is position:fixed so only the timeline moves.
-
-   Pattern per scene:
-   1. Fade in text at normal size + images fly in from edges
-   2. Text scales up massively while images drift/rotate
-   3. Everything fades/flies out â†’ next scene begins
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* STORYTELLING TIMELINE */
 function buildStoryTimeline() {
   const stage = document.getElementById('story-stage');
   const spacer = document.getElementById('scroll-spacer');
@@ -1062,13 +1022,13 @@ function buildStoryTimeline() {
     }
   });
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-     SCENE 1: "DESCUBRE TU KIT BOTÃNICO..."
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* 
+     SCENE 1: "DESCUBRE TU KIT BOTíNICO..."
+      */
   const s1 = '#s1';
   tl
     .addLabel('scene_1')
-    // Estado inicial en reposo cuando el scroll estÃ¡ arriba
+    // Estado inicial en reposo cuando el scroll está arriba
     .set(s1, { opacity: 1 })
     .set(`${s1} .st`, { opacity: 1, scale: 1, y: 0 })
     .set(`${s1} .si1`, { opacity: 1, x: '0%', y: '0%', rotation: 0 })
@@ -1085,9 +1045,9 @@ function buildStoryTimeline() {
     // Fade out everything
     .to(s1, { opacity: 0, duration: 1.5 });
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* 
      SCENE 2: "ENTRA EN EL MUNDO DE LAS PLANTAS..."
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+      */
   const s2 = '#s2';
   tl
     .set(s2, { opacity: 1 })
@@ -1104,9 +1064,9 @@ function buildStoryTimeline() {
     .to(`${s2} .si2`, { x: '60%', y: '-30%', scale: 1.6, rotation: 12, duration: 4, ease: 'power1.in' }, '<')
     .to(s2, { opacity: 0, duration: 1.5 });
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* 
      SCENE 3: "CADA MES. SIN ESFUERZO."
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+      */
   const s3 = '#s3';
   tl
     .set(s3, { opacity: 1 })
@@ -1126,9 +1086,9 @@ function buildStoryTimeline() {
     .to(`${s3} .si2`, { x: '50%', y: '-40%', scale: 1.5, rotation: 15, duration: 4 }, '<')
     .to(s3, { opacity: 0, duration: 1.5 });
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-     SCENE 4: "24,90 â‚¬ AL MES" (Price reveal)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* 
+     SCENE 4: "24,90€ AL MES" (Price reveal)
+      */
   const s4 = '#s4';
   tl
     .set(s4, { opacity: 1 })
@@ -1145,9 +1105,9 @@ function buildStoryTimeline() {
     .to(`${s4} .si1`, { x: '-50%', scale: 1.3, rotation: -8, duration: 3.5 }, '<')
     .to(s4, { opacity: 0, duration: 1.5 });
 
-  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  /* 
      SCENE 5: "COMIENZA TU JUNGLA URBANA" (Final)
-     â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+      */
   const s5 = '#s5';
   tl
     .set(s5, { opacity: 1 })
@@ -1172,9 +1132,9 @@ function buildStoryTimeline() {
   window.storyTimeline = tl;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* •â•â•â•â•â•â•â•â•â•â•â•
    POST-STORY REVEAL ANIMATIONS
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   •â•â•â•â•â•â•â•â•â•â•â• */
 function initPostStoryReveals() {
   gsap.utils.toArray('.rv').forEach(el => {
     gsap.to(el, {
@@ -1203,9 +1163,7 @@ function initPostStoryReveals() {
   });
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   WHATSAPP INTERACTIVE BOT ENGINE (SELBOT / VÃ‰RTICA)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/*    WHATSAPP INTERACTIVE BOT ENGINE (SELBOT) */
 function initWhatsApp() {
   const body = document.getElementById('wa-body');
   const resetBtn = document.getElementById('wa-reset-btn');
@@ -1283,11 +1241,11 @@ function initWhatsApp() {
 
   // Predefined questions
   const defaultQuestions = [
-    { id: 'monstera', label: 'ðŸŒ¿ Mi Monstera tiene manchas amarillas', query: 'Mi Monstera tiene manchas amarillas. Â¿QuÃ© puede ser?' },
-    { id: 'riego', label: 'ðŸ’§ Â¿Cada cuÃ¡nto debo regar mis plantas?', query: 'Â¿Cada cuÃ¡nto debo regar mis plantas de interior?' },
-    { id: 'kit', label: 'ðŸ“¦ Â¿CÃ³mo usar el abono?', query: 'Â¿CÃ³mo usar el abono?' },
-    { id: 'plaga', label: 'ðŸ¦Ÿ Hay bichos blancos en las hojas', query: 'Hay bichos blancos en las hojas de mi planta' },
-    { id: 'otros', label: 'âœ¨ Otros / Hablar con un asesor', query: 'Quiero consultar sobre otro tema' }
+    { id: 'monstera', label: '¿ Mi Monstera tiene manchas amarillas', query: 'Mi Monstera tiene manchas amarillas. ¿Qué puede ser?' },
+    { id: 'riego', label: '¿Cada cuánto debo regar mis plantas?', query: '¿Cada cuánto debo regar mis plantas de interior?' },
+    { id: 'kit', label: '¿Cómo usar el abono?', query: '¿Cómo usar el abono?' },
+    { id: 'plaga', label: 'Hay bichos blancos en las hojas', query: 'Hay bichos blancos en las hojas de mi planta' },
+    { id: 'otros', label: 'Otros / Hablar con un asesor', query: 'Quiero consultar sobre otro tema' }
   ];
 
   // 1. Initial Greeting with Question Options
@@ -1302,8 +1260,8 @@ function initWhatsApp() {
     pillsHtml += '</div>';
 
     const greetingText = `
-      Â¡Hola! Soy <strong>Selbot</strong>, tu asistente de cuidado botÃ¡nico de Selva Suave ðŸŒ±âœ¨<br>
-      Â¿En quÃ© te puedo ayudar hoy? Elige una consulta frecuente o <em>escribe tu duda</em> abajo:
+      ¡Hola! Soy <strong>Selbot</strong>, tu asistente de cuidado botánico de Selva Suave<br>
+      ¿En qué te puedo ayudar hoy? Elige una consulta frecuente o <em>escribe tu duda</em> abajo:
       <div class="wa-meta">${getTimeStr()}</div>
       ${pillsHtml}
     `;
@@ -1339,12 +1297,12 @@ function initWhatsApp() {
 
     const lower = cleanText.toLowerCase();
 
-    // 1. Saludos tÃ­picos (Hola, buenos dÃ­as, etc.)
-    if (/^(hola|buen(as|os)?\s*(d[iÃ­]as|tardes|noches)?|qu[eÃ©]\s*tal|c[oÃ³]mo\s*est[aÃ¡]s|hey|buenas)$/i.test(lower.trim()) ||
+    // 1. Saludos tí­picos (Hola, buenos dí­as, etc.)
+    if (/^(hola|buen(as|os)?\s*(d[ií­]as|tardes|noches)?|qu[eé]\s*tal|c[oó]mo\s*est[aá]s|hey|buenas)$/i.test(lower.trim()) ||
         (lower.startsWith('hola') && lower.length < 15)) {
       appendBotMessage(`
-        Â¡Hola! ðŸ‘‹ QuÃ© alegrÃ­a saludarte. Soy <strong>Selbot</strong>, tu asistente de cuidado vegetal.<br><br>
-        Â¿CÃ³mo estÃ¡n tus plantas hoy? CuÃ©ntame quÃ© notas o selecciona una duda para empezar:
+        ¡Hola! Qué alegrí­a saludarte. Soy <strong>Selbot</strong>, tu asistente de cuidado vegetal.<br><br>
+        ¿Cómo están tus plantas hoy? Cuéntame qué notas o selecciona una duda para empezar:
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-hello-options">
           <button type="button" class="wa-btn-pill" data-expert="menu">Ver preguntas frecuentes</button>
@@ -1359,8 +1317,8 @@ function initWhatsApp() {
     if (/^(gracias|muchas\s*gracias|mil\s*gracias|te\s*lo\s*agradezco|perfecto\s*gracias|vale\s*gracias)$/i.test(lower.trim()) ||
         lower.includes('gracias')) {
       appendBotMessage(`
-        Â¡De nada! ðŸŒ¿ðŸ’š Para eso estamos en Selva Suave: para que cuidar tus plantas sea fÃ¡cil, relajante y sin complicaciones.<br><br>
-        Si surge cualquier otra duda, Â¡aquÃ­ me tienes siempre disponible!
+        ¡De nada! Para eso estamos en Selva Suave: para que cuidar tus plantas sea fácil, relajante y sin complicaciones.<br><br>
+        Si surge cualquier otra duda, ¡aquí­ me tienes siempre disponible!
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-thanks-options">
           <button type="button" class="wa-btn-pill" data-expert="menu">Hacer otra consulta</button>
@@ -1370,33 +1328,33 @@ function initWhatsApp() {
       return;
     }
 
-    // 3. Despedidas (AdiÃ³s, hasta luego, chao, etc.)
-    if (/^(adi[oÃ³]s|hasta\s*luego|hasta\s*pronto|chao|chau|nos\s*vemos|bye|hasta\s*maÃ±ana)$/i.test(lower.trim()) ||
-        lower.includes('adios') || lower.includes('adiÃ³s') || lower.includes('hasta luego')) {
+    // 3. Despedidas (Adiós, hasta luego, chao, etc.)
+    if (/^(adi[oó]s|hasta\s*luego|hasta\s*pronto|chao|chau|nos\s*vemos|bye|hasta\s*mañana)$/i.test(lower.trim()) ||
+        lower.includes('adios') || lower.includes('adiós') || lower.includes('hasta luego')) {
       appendBotMessage(`
-        Â¡Hasta pronto! Que tengas un dÃ­a genial y que tus plantas sigan creciendo felices y llenas de vida ðŸª´âœ¨<br>
-        Â¡Vuelve cuando quieras!
+        ¡Hasta pronto! Que tengas un dí­a genial y que tus plantas sigan creciendo felices y llenas de vida<br>
+        ¡Vuelve cuando quieras!
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-bye-options">
-          <button type="button" class="wa-btn-pill" data-expert="menu">ðŸ”„ Reiniciar chat</button>
+          <button type="button" class="wa-btn-pill" data-expert="menu">Reiniciar chat</button>
         </div>
       `);
       bindPostHelpOptions('wa-bye-options');
       return;
     }
 
-    // 4. OpciÃ³n 'Otros' / Consulta libre sobre suscripciÃ³n, envÃ­os, etc.
-    if (forcedCategory === 'otros' || lower === 'otros' || lower.includes('otro tema') || lower.includes('asesor') || lower.includes('precio') || lower.includes('suscripci') || lower.includes('envio') || lower.includes('envÃ­o')) {
+    // 4. Opción 'Otros' / Consulta libre sobre suscripción, enví­os, etc.
+    if (forcedCategory === 'otros' || lower === 'otros' || lower.includes('otro tema') || lower.includes('asesor') || lower.includes('precio') || lower.includes('suscripci') || lower.includes('envio') || lower.includes('enví­o')) {
       appendBotMessage(`
-        Â¡Por supuesto! En <strong>Selva Suave</strong> te ayudamos con cualquier tema:<br>
-        â€¢ ðŸŒ¿ <strong>DiagnÃ³stico botÃ¡nico personalizado</strong> con fotos.<br>
-        â€¢ ðŸ“¦ <strong>Estado de envÃ­os y suscripciÃ³n mensual</strong> (24,90 â‚¬/mes).<br>
-        â€¢ ðŸª´ <strong>RecomendaciÃ³n de plantas</strong> para la luz de tu casa.<br><br>
-        Â¿Te gustarÃ­a que te comunique directamente con un especialista botÃ¡nico humano de nuestro equipo?
+        ¡Por supuesto! En <strong>Selva Suave</strong> te ayudamos con cualquier tema:<br>
+        <strong>Diagnóstico botánico personalizado</strong> con fotos.<br>
+        <strong>Estado de enví­os y suscripción mensual</strong> (24,90€/mes).<br>
+        <strong>Recomendación de plantas</strong> para la luz de tu casa.<br><br>
+        ¿Te gustarí­a que te comunique directamente con un especialista botánico humano de nuestro equipo?
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-others-options">
-          <button type="button" class="wa-btn-pill" data-expert="yes">ðŸ‘¤ SÃ­, hablar con un humano</button>
-          <button type="button" class="wa-btn-pill" data-expert="menu">ðŸŒ¿ Ver dudas frecuentes</button>
+          <button type="button" class="wa-btn-pill" data-expert="yes">Sí­, hablar con un humano</button>
+          <button type="button" class="wa-btn-pill" data-expert="menu">Ver dudas frecuentes</button>
         </div>
       `);
       bindPostHelpOptions('wa-others-options');
@@ -1406,12 +1364,12 @@ function initWhatsApp() {
     if (forcedCategory === 'monstera' || lower.includes('monstera') || lower.includes('amarill')) {
       // Flow 1: Monstera yellow leaves & diagnosis tree
       const botText = `
-        Â¡Entendido! Para diagnosticar tu Monstera, por favor confirma:<br>
-        Â¿Tiene puntos negros en el envÃ©s de la hoja o filamentos finos?
+        ¡Entendido! Para diagnosticar tu Monstera, por favor confirma:<br>
+        ¿Tiene puntos negros en el envés de la hoja o filamentos finos?
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-monstera-options">
           <button type="button" class="wa-btn-pill" data-choice="A">A. Puntos negros</button>
-          <button type="button" class="wa-btn-pill" data-choice="B">B. Filamentos/telaraÃ±as</button>
+          <button type="button" class="wa-btn-pill" data-choice="B">B. Filamentos/telarañas</button>
           <button type="button" class="wa-btn-pill" data-choice="C">C. Ninguno</button>
         </div>
       `;
@@ -1430,13 +1388,13 @@ function initWhatsApp() {
           });
         });
       }
-    } else if (forcedCategory === 'plaga' || lower.includes('bicho') || lower.includes('plaga') || lower.includes('cochinilla') || lower.includes('araÃ±a')) {
+    } else if (forcedCategory === 'plaga' || lower.includes('bicho') || lower.includes('plaga') || lower.includes('cochinilla') || lower.includes('araña')) {
       // Flow 2: Bugs / Pests
       appendBotMessage(`
         Los bichitos blancos suelen ser <strong>cochinilla algodonosa</strong> o trips en fase ninfa.
         <div class="wa-media-row">
           <div class="wa-media-text">
-            AÃ­sla la planta, retÃ­ralos con el pincel del kit impregnado en alcohol suave y pulveriza la soluciÃ³n fitosanitaria natural incluida este mes. Consulta aquÃ­ la guÃ­a: <span class="wa-link">[Ver GuÃ­a Antiplagas]</span>.
+            Aí­sla la planta, retí­ralos con el pincel del kit impregnado en alcohol suave y pulveriza la solución fitosanitaria natural incluida este mes. Consulta aquí­ la guí­a: <span class="wa-link">[Ver Guí­a Antiplagas]</span>.
           </div>
           <div class="wa-media-thumb">
             <img src="hoja-plaga.jpg" alt="Plaga en hoja" />
@@ -1445,31 +1403,31 @@ function initWhatsApp() {
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-plaga-options">
           <button type="button" class="wa-btn-pill" data-expert="yes">Hablar con Experto Humano</button>
-          <button type="button" class="wa-btn-pill" data-expert="menu">Ver mÃ¡s preguntas</button>
+          <button type="button" class="wa-btn-pill" data-expert="menu">Ver más preguntas</button>
         </div>
       `);
       bindPostHelpOptions('wa-plaga-options');
     } else if (forcedCategory === 'riego' || lower.includes('riego') || lower.includes('regar') || lower.includes('agua') || lower.includes('humedad')) {
       // Flow 3: Watering Advice
       appendBotMessage(`
-        ðŸ’§ <strong>Regla de oro de Selva Suave:</strong> No riegues por calendario fijo, riega segÃºn la humedad del sustrato.
+        <strong>Regla de oro de Selva Suave:</strong> No riegues por calendario fijo, riega según la humedad del sustrato.
         <br><br>
-        Introduce el dedo 2-3 cm en la tierra. Si sale seco, aplica agua reposada y dosifica con la pipeta de nutriciÃ³n de tu kit. Si notas humedad, Â¡espera 3 o 4 dÃ­as mÃ¡s!
+        Introduce el dedo 2-3 cm en la tierra. Si sale seco, aplica agua reposada y dosifica con la pipeta de nutrición de tu kit. Si notas humedad, ¡espera 3 o 4 dí­as más!
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-riego-options">
-          <button type="button" class="wa-btn-pill" data-expert="yes">Consultar a un BotÃ¡nico</button>
-          <button type="button" class="wa-btn-pill" data-expert="menu">MenÃº principal</button>
+          <button type="button" class="wa-btn-pill" data-expert="yes">Consultar a un Botánico</button>
+          <button type="button" class="wa-btn-pill" data-expert="menu">Menú principal</button>
         </div>
       `);
       bindPostHelpOptions('wa-riego-options');
     } else if (forcedCategory === 'kit' || lower.includes('kit') || lower.includes('abono') || lower.includes('caja') || lower.includes('sustrato')) {
       // Flow 4: Kit contents & care
       appendBotMessage(`
-        ðŸ“¦ Tu caja mensual de Selva Suave contiene:<br>
-        â€¢ ðŸ’§ <strong>NutriciÃ³n lÃ­quida:</strong> Dosis justa segÃºn la estaciÃ³n del aÃ±o.<br>
-        â€¢ ðŸª´ <strong>Enmienda y sustrato:</strong> Formato compacto sin sacos gigantes.<br>
-        â€¢ âœ‚ï¸ <strong>Herramienta de autor:</strong> Para poda o trasplante.<br>
-        â€¢ ðŸ“± <strong>Acceso a Doctor Planta</strong> para resolver cualquier duda botÃ¡nica.
+        Tu caja mensual de Selva Suave contiene:<br>
+        <strong>Nutrición lí­quida:</strong> Dosis justa según la estación del año.<br>
+        <strong>Enmienda y sustrato:</strong> Formato compacto sin sacos gigantes.<br>
+        <strong>Herramienta de autor:</strong> Para poda o trasplante.<br>
+        <strong>Acceso a Doctor Planta</strong> para resolver cualquier duda botánica.
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-kit-options">
           <button type="button" class="wa-btn-pill" data-expert="yes">Conectar con un asesor</button>
@@ -1480,10 +1438,10 @@ function initWhatsApp() {
     } else {
       // General NLP fallback with intelligent assistance
       appendBotMessage(`
-        He analizado tu consulta sobre "<em>${cleanText}</em>". Para darte un diagnÃ³stico 100% exacto segÃºn la especie de tu planta y las condiciones de luz de tu casa, Â¿te gustarÃ­a que te conecte con nuestro equipo botÃ¡nico humano?
+        He analizado tu consulta sobre "<em>${cleanText}</em>". Para darte un diagnóstico 100% exacto según la especie de tu planta y las condiciones de luz de tu casa, ¿te gustarí­a que te conecte con nuestro equipo botánico humano?
         <div class="wa-meta">${getTimeStr()}</div>
         <div class="wa-options-wrap" id="wa-general-options">
-          <button type="button" class="wa-btn-pill" data-expert="yes">SÃ­, conectar con Experto</button>
+          <button type="button" class="wa-btn-pill" data-expert="yes">Sí­, conectar con Experto</button>
           <button type="button" class="wa-btn-pill" data-expert="menu">Ver preguntas frecuentes</button>
         </div>
       `);
@@ -1493,18 +1451,18 @@ function initWhatsApp() {
 
   // Render Monstera diagnosis with leaf picture
   async function renderMonsteraDiagnosis(choice) {
-    let diagnosisIntro = 'Entendido. Esto parece una infestaciÃ³n de araÃ±a roja, una plaga comÃºn.';
+    let diagnosisIntro = 'Entendido. Esto parece una infestación de araña roja, una plaga común.';
     if (choice === 'A') {
       diagnosisIntro = 'Entendido. Los puntos negros sugieren trips o cochinilla en fase activa.';
     } else if (choice === 'C') {
-      diagnosisIntro = 'Entendido. Al no haber telaraÃ±as ni puntos, es probable que se trate de clorosis o exceso de riego.';
+      diagnosisIntro = 'Entendido. Al no haber telarañas ni puntos, es probable que se trate de clorosis o exceso de riego.';
     }
 
     const botDiagnosisHtml = `
       ${diagnosisIntro}
       <div class="wa-media-row">
         <div class="wa-media-text">
-          He filtrado tu caso y parece un diagnÃ³stico claro. Revisa nuestra guÃ­a de tratamiento y el producto anti-plagas de tu kit aquÃ­: <span class="wa-link">[Enlace]</span>.
+          He filtrado tu caso y parece un diagnóstico claro. Revisa nuestra guí­a de tratamiento y el producto anti-plagas de tu kit aquí­: <span class="wa-link">[Enlace]</span>.
         </div>
         <div class="wa-media-thumb">
           <img src="hoja-plaga.jpg" alt="Hoja de monstera afectada" />
@@ -1517,11 +1475,11 @@ function initWhatsApp() {
     await showTypingIndicator(800);
 
     const botEscalationHtml = `
-      Como es una plaga persistente, Â¿te gustarÃ­a que te conecte con un Experto Humano para un mayor diagnÃ³stico y plan personalizado?
+      Como es una plaga persistente, ¿te gustarí­a que te conecte con un Experto Humano para un mayor diagnóstico y plan personalizado?
       <div class="wa-meta">${getTimeStr()}</div>
       <div class="wa-options-wrap" id="wa-step2-options">
-        <button type="button" class="wa-btn-pill" data-choice="yes">SÃ­, conectar</button>
-        <button type="button" class="wa-btn-pill" data-choice="no">No, sigo la guÃ­a</button>
+        <button type="button" class="wa-btn-pill" data-choice="yes">Sí­, conectar</button>
+        <button type="button" class="wa-btn-pill" data-choice="no">No, sigo la guí­a</button>
       </div>
     `;
     appendBotMessage(botEscalationHtml);
@@ -1536,24 +1494,24 @@ function initWhatsApp() {
         step2Wrap.querySelectorAll('.wa-btn-pill').forEach(b => b.disabled = true);
 
         if (isYes) {
-          appendUserMessage('SÃ­, conectar');
+          appendUserMessage('Sí­, conectar');
           await showTypingIndicator(700);
           appendBotMessage(`
-            Â¡Claro! Derivando tu caso. Un experto humano se unirÃ¡ en breve.
+            ¡Claro! Derivando tu caso. Un experto humano se unirá en breve.
             <div class="wa-meta">${getTimeStr()}</div>
             <div class="wa-options-wrap" id="wa-end-options">
-              <button type="button" class="wa-btn-pill" data-expert="menu">ðŸ”„ Volver al inicio</button>
+              <button type="button" class="wa-btn-pill" data-expert="menu">Volver al inicio</button>
             </div>
           `);
           bindPostHelpOptions('wa-end-options');
         } else {
-          appendUserMessage('No, sigo la guÃ­a');
+          appendUserMessage('No, sigo la guí­a');
           await showTypingIndicator(600);
           appendBotMessage(`
-            Â¡Perfecto! Tienes las dosis y el calendario detallado en tu app y kit del mes. Â¡AquÃ­ estarÃ© si notas cualquier cambio! ðŸª´âœ¨
+            ¡Perfecto! Tienes las dosis y el calendario detallado en tu app y kit del mes. ¡Aquí­ estaré si notas cualquier cambio!
             <div class="wa-meta">${getTimeStr()}</div>
             <div class="wa-options-wrap" id="wa-end-options-2">
-              <button type="button" class="wa-btn-pill" data-expert="menu">ðŸ”„ Volver al inicio</button>
+              <button type="button" class="wa-btn-pill" data-expert="menu">Volver al inicio</button>
             </div>
           `);
           bindPostHelpOptions('wa-end-options-2');
@@ -1573,13 +1531,13 @@ function initWhatsApp() {
         btn.classList.add('selected');
 
         if (action === 'yes') {
-          appendUserMessage('SÃ­, por favor conectar con un Experto Humano');
+          appendUserMessage('Sí­, por favor conectar con un Experto Humano');
           await showTypingIndicator(700);
           appendBotMessage(`
-            Â¡Solicitud recibida! Un botÃ¡nico de nuestro equipo revisarÃ¡ tu caso y te responderÃ¡ por este chat en menos de 15 minutos ðŸ©ºðŸŒ¿.
+            ¡Solicitud recibida! Un botánico de nuestro equipo revisará tu caso y te responderá por este chat en menos de 15 minutos.
             <div class="wa-meta">${getTimeStr()}</div>
             <div class="wa-options-wrap" id="wa-back-wrap">
-              <button type="button" class="wa-btn-pill" data-expert="menu">ðŸ”„ Volver al menÃº de preguntas</button>
+              <button type="button" class="wa-btn-pill" data-expert="menu">Volver al menú de preguntas</button>
             </div>
           `);
           bindPostHelpOptions('wa-back-wrap');
@@ -1631,9 +1589,7 @@ function initWhatsApp() {
   renderGreeting();
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   USO DE LA IA - 3D FLIP CARDS
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* USO DE LA IA - 3D FLIP CARDS */
 function initIACards() {
   document.querySelectorAll('.ia-card').forEach(card => {
     card.addEventListener('click', () => {
@@ -1648,9 +1604,7 @@ function initIACards() {
   });
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   FINANCIAL CALCULATOR + CHART.JS
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* FINANCIAL CALCULATOR + CHART.JS */
 let fChart = null;
 
 function initCalc() {
@@ -1664,14 +1618,14 @@ function initCalc() {
     const $ = id => document.getElementById(id);
     $('v-subs').textContent = subs.toLocaleString('es-ES');
     $('v-churn').textContent = churn.toFixed(1) + '%';
-    $('v-cac').textContent = cac.toFixed(1) + ' â‚¬';
+    $('v-cac').textContent = cac.toFixed(1) + '€';
 
     const t = 24.90, mrr = subs * t, arr = mrr * 12;
     const ltv = t / (churn / 100), ratio = (ltv / cac).toFixed(1);
 
-    $('kpi-mrr').textContent = Math.round(mrr).toLocaleString('es-ES') + ' â‚¬';
-    $('kpi-arr').textContent = Math.round(arr).toLocaleString('es-ES') + ' â‚¬';
-    $('kpi-ltv').textContent = Math.round(ltv).toLocaleString('es-ES') + ' â‚¬';
+    $('kpi-mrr').textContent = Math.round(mrr).toLocaleString('es-ES') + '€';
+    $('kpi-arr').textContent = Math.round(arr).toLocaleString('es-ES') + '€';
+    $('kpi-ltv').textContent = Math.round(ltv).toLocaleString('es-ES') + '€';
     $('kpi-ratio').textContent = ratio + 'x';
 
     updChart(subs, churn / 100);
@@ -1718,5 +1672,3 @@ function updChart(subs, cr) {
   fChart.data.datasets[1].data = p;
   fChart.update();
 }
-
-
