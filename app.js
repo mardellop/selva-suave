@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeaderScroll();
   initHeaderNav();
   updateWhatsAppStatusTime();
-  initPreloader();
+  boot();
 });
 
 function updateWhatsAppStatusTime() {
@@ -301,417 +301,6 @@ function initHeaderNav() {
   });
 }
 
-/* PRELOADER */
-function initPreloader() {
-  const el = document.getElementById('preloader');
-  const bar = document.getElementById('pre-bar');
-  const pct = document.getElementById('pre-pct');
-  const brand = document.querySelector('.pre-brand');
-  const statusEl = document.getElementById('pre-seed-status');
-
-  if (!el) { 
-    boot(); 
-    return; 
-  }
-
-  // Fade brand in
-  gsap.to(brand, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
-
-  // Initialize 3D Digital Seed
-  const seed3D = init3DSeed();
-
-  const statusTexts = [
-    { at: 0,  text: 'Preparando la tierra...' },
-    { at: 23, text: 'Seleccionando el abono perfecto...' },
-    { at: 65, text: 'Empaquetando la caja del mes...' },
-    { at: 88, text: '¡Bienvenido a casa!' }
-  ];
-
-  // Extended loading duration (+5 seconds, total ~7.8s)
-  const TOTAL_DURATION = 7800; // ms
-  const startTime = performance.now();
-  let completed = false;
-
-  function tick(now) {
-    if (completed) return;
-    const elapsed = now - startTime;
-    const fraction = Math.min(1, elapsed / TOTAL_DURATION);
-    const p = fraction * 100;
-
-    if (seed3D) seed3D.setProgress(fraction);
-
-    bar.style.width = p.toFixed(1) + '%';
-    pct.textContent = Math.round(p) + '%';
-
-    // Update status text
-    if (statusEl) {
-      for (let i = statusTexts.length - 1; i >= 0; i--) {
-        if (p >= statusTexts[i].at) {
-          if (statusEl.textContent !== statusTexts[i].text) {
-            statusEl.textContent = statusTexts[i].text;
-            if (p >= 96) statusEl.style.color = '#73B839';
-          }
-          break;
-        }
-      }
-    }
-
-    if (fraction < 1) {
-      requestAnimationFrame(tick);
-    } else {
-      completed = true;
-      setTimeout(() => {
-        el.classList.add('done');
-        setTimeout(() => {
-          if (seed3D) seed3D.destroy();
-        }, 1200);
-        boot();
-      }, 600);
-    }
-  }
-
-  requestAnimationFrame(tick);
-}
-
-/* 3D DIGITAL SEED GERMINATION ENGINE (THREE.JS) */
-function init3DSeed() {
-  const container = document.getElementById('seed-canvas-container');
-  if (!container || typeof THREE === 'undefined') return null;
-
-  const width = container.clientWidth || 340;
-  const height = container.clientHeight || 320;
-
-  const scene = new THREE.Scene();
-  // Camera placed at optimal distance (z = 5.4) so the entire plant
-  // (seed base to open leaves) fits comfortably without clipping
-  const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 50);
-  camera.position.set(0, 0.1, 5.4);
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
-  container.appendChild(renderer.domElement);
-
-  // Responsive resize handler
-  function handleResize() {
-    if (!container || !renderer || !camera) return;
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    if (w > 0 && h > 0) {
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    }
-  }
-  window.addEventListener('resize', handleResize);
-
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0x0E2A1F, 1.4);
-  scene.add(ambientLight);
-
-  const mainLight = new THREE.DirectionalLight(0xffffff, 1.6);
-  mainLight.position.set(2.5, 4.5, 3.5);
-  scene.add(mainLight);
-
-  const greenPoint = new THREE.PointLight(0x73B839, 2.8, 7);
-  greenPoint.position.set(0, 1.2, 1.8);
-  scene.add(greenPoint);
-
-  const rimLight = new THREE.DirectionalLight(0xA3E635, 1.1);
-  rimLight.position.set(-2.5, -2, -2);
-  scene.add(rimLight);
-
-  // Master Floating Group
-  const seedMaster = new THREE.Group();
-  seedMaster.position.y = -0.25;
-  scene.add(seedMaster);
-
-  // 1. Digital Shell (Left & Right halves that split)
-  const shellGeo = new THREE.SphereGeometry(0.72, 32, 24, 0, Math.PI);
-  // Deform geometry slightly to create natural seed taper towards top
-  const posAttr = shellGeo.attributes.position;
-  for (let i = 0; i < posAttr.count; i++) {
-    const y = posAttr.getY(i);
-    const taper = 1.0 - (y * 0.22);
-    posAttr.setX(i, posAttr.getX(i) * taper);
-    posAttr.setZ(i, posAttr.getZ(i) * taper);
-  }
-  shellGeo.computeVertexNormals();
-
-  const shellMat = new THREE.MeshStandardMaterial({
-    color: 0x143A2A,
-    roughness: 0.32,
-    metalness: 0.3,
-    emissive: 0x081E15
-  });
-
-  const wireMat = new THREE.MeshBasicMaterial({
-    color: 0x73B839,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.22
-  });
-
-  // Left Shell Half
-  const shellLeft = new THREE.Group();
-  shellLeft.add(new THREE.Mesh(shellGeo, shellMat));
-  shellLeft.add(new THREE.Mesh(shellGeo, wireMat));
-  shellLeft.rotation.y = Math.PI / 2;
-  seedMaster.add(shellLeft);
-
-  // Right Shell Half
-  const shellRight = new THREE.Group();
-  shellRight.add(new THREE.Mesh(shellGeo, shellMat));
-  shellRight.add(new THREE.Mesh(shellGeo, wireMat));
-  shellRight.rotation.y = -Math.PI / 2;
-  seedMaster.add(shellRight);
-
-  // Glowing Core Embryo / Nucleus
-  const coreGeo = new THREE.SphereGeometry(0.36, 20, 20);
-  const coreMat = new THREE.MeshStandardMaterial({
-    color: 0x56AB2F,
-    emissive: 0x2E6B1B,
-    roughness: 0.2,
-    metalness: 0.15
-  });
-  const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-  coreMesh.position.y = 0.05;
-  seedMaster.add(coreMesh);
-
-  // 2. Emerging Stem (Tallo Germinando)
-  const stemHeight = 1.35;
-  const stemGeo = new THREE.CylinderGeometry(0.045, 0.075, stemHeight, 16);
-  // Shift pivot to bottom of cylinder
-  stemGeo.translate(0, stemHeight / 2, 0);
-
-  const stemMat = new THREE.MeshStandardMaterial({
-    color: 0x73B839,
-    emissive: 0x225514,
-    roughness: 0.25,
-    metalness: 0.12
-  });
-  const stem = new THREE.Mesh(stemGeo, stemMat);
-  stem.position.y = 0.1;
-  stem.rotation.z = -0.05;
-  stem.scale.set(0.001, 0.001, 0.001);
-  seedMaster.add(stem);
-
-  // Tip Group at top of stem for leaves
-  const tipGroup = new THREE.Group();
-  tipGroup.position.set(0, stemHeight, 0);
-  stem.add(tipGroup);
-
-  // 3. Emerging Cotyledon Leaves (Hojas que brotan y se abren)
-  const leafShape = new THREE.Shape();
-  leafShape.moveTo(0, 0);
-  leafShape.bezierCurveTo(0.24, 0.12, 0.36, 0.58, 0, 0.95);
-  leafShape.bezierCurveTo(-0.36, 0.58, -0.24, 0.12, 0, 0);
-
-  const leafGeo = new THREE.ShapeGeometry(leafShape, 16);
-  const leafMat = new THREE.MeshStandardMaterial({
-    color: 0x8BE336,
-    emissive: 0x2A6B17,
-    roughness: 0.3,
-    metalness: 0.1,
-    side: THREE.DoubleSide
-  });
-
-  const leafWireMat = new THREE.MeshBasicMaterial({
-    color: 0xC4F06A,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.35,
-    side: THREE.DoubleSide
-  });
-
-  // Left Leaf
-  const leaf1 = new THREE.Group();
-  leaf1.add(new THREE.Mesh(leafGeo, leafMat));
-  leaf1.add(new THREE.Mesh(leafGeo, leafWireMat));
-  leaf1.scale.set(0.001, 0.001, 0.001);
-  tipGroup.add(leaf1);
-
-  // Right Leaf
-  const leaf2 = new THREE.Group();
-  leaf2.add(new THREE.Mesh(leafGeo, leafMat));
-  leaf2.add(new THREE.Mesh(leafGeo, leafWireMat));
-  leaf2.scale.set(0.001, 0.001, 0.001);
-  tipGroup.add(leaf2);
-
-  // Small Apex Bud
-  const budGeo = new THREE.SphereGeometry(0.1, 14, 14);
-  const budMat = new THREE.MeshStandardMaterial({
-    color: 0xC4F06A,
-    emissive: 0x4B8F1B,
-    roughness: 0.2
-  });
-  const budMesh = new THREE.Mesh(budGeo, budMat);
-  budMesh.position.y = 0.05;
-  budMesh.scale.set(0.001, 0.001, 0.001);
-  tipGroup.add(budMesh);
-
-  // 4. Bio-digital Swirling Spores / Particles
-  const particleCount = 65;
-  const particleGeo = new THREE.BufferGeometry();
-  const particlePos = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount * 3; i += 3) {
-    const radius = 0.9 + Math.random() * 1.3;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = (Math.random() - 0.5) * Math.PI;
-    particlePos[i] = radius * Math.cos(phi) * Math.sin(theta);
-    particlePos[i + 1] = radius * Math.sin(phi) + 0.3;
-    particlePos[i + 2] = radius * Math.cos(phi) * Math.cos(theta);
-  }
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
-  const particleMat = new THREE.PointsMaterial({
-    color: 0x73B839,
-    size: 0.055,
-    transparent: true,
-    opacity: 0.65,
-    blending: THREE.AdditiveBlending
-  });
-  const particles = new THREE.Points(particleGeo, particleMat);
-  scene.add(particles);
-
-  // Interactive Drag to Rotate
-  let isDragging = false;
-  let prevMouseX = 0;
-  let targetRotY = 0;
-  container.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    prevMouseX = e.clientX;
-  });
-  window.addEventListener('mouseup', () => { isDragging = false; });
-  window.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      const delta = e.clientX - prevMouseX;
-      targetRotY += delta * 0.012;
-      prevMouseX = e.clientX;
-    }
-  });
-
-  // Touch support for drag
-  container.addEventListener('touchstart', (e) => {
-    if (e.touches.length === 1) {
-      isDragging = true;
-      prevMouseX = e.touches[0].clientX;
-    }
-  }, { passive: true });
-  window.addEventListener('touchend', () => { isDragging = false; });
-  window.addEventListener('touchmove', (e) => {
-    if (isDragging && e.touches.length === 1) {
-      const delta = e.touches[0].clientX - prevMouseX;
-      targetRotY += delta * 0.012;
-      prevMouseX = e.touches[0].clientX;
-    }
-  }, { passive: true });
-
-  // Animation State
-  let currentProgress = 0;
-  let smoothProgress = 0;
-  const clock = new THREE.Clock();
-  let reqId = null;
-
-  function renderLoop() {
-    const elapsed = clock.getElapsedTime();
-
-    // Smooth lerp progress
-    smoothProgress += (currentProgress - smoothProgress) * 0.1;
-    const p = Math.max(0, Math.min(1, smoothProgress));
-
-    // Master float & spin (dynamically lowers as it grows so visual center stays perfectly aligned)
-    const dynamicBaseY = -0.15 - (p * 0.48);
-    seedMaster.position.y = dynamicBaseY + Math.sin(elapsed * 2.0) * 0.05;
-    seedMaster.rotation.y += 0.012 + (targetRotY - seedMaster.rotation.y) * 0.08;
-    seedMaster.rotation.x = Math.sin(elapsed * 1.5) * 0.04;
-
-    // Spore swirl
-    particles.rotation.y = elapsed * 0.18;
-    particles.rotation.x = Math.sin(elapsed * 0.4) * 0.08;
-
-    // Phase 1: Shell Opening (0% -> 55%)
-    if (p < 0.25) {
-      const openRatio = p / 0.25;
-      shellLeft.rotation.z = -openRatio * 0.12;
-      shellRight.rotation.z = openRatio * 0.12;
-      shellLeft.position.x = -openRatio * 0.06;
-      shellRight.position.x = openRatio * 0.06;
-      coreMesh.scale.setScalar(1 + openRatio * 0.2);
-    } else {
-      const splitProg = Math.min(1, (p - 0.25) / 0.55);
-      shellLeft.rotation.z = -0.12 - splitProg * 0.58;
-      shellRight.rotation.z = 0.12 + splitProg * 0.58;
-      shellLeft.position.x = -0.06 - splitProg * 0.26;
-      shellRight.position.x = 0.06 + splitProg * 0.26;
-      shellLeft.position.y = -splitProg * 0.16;
-      shellRight.position.y = -splitProg * 0.16;
-    }
-
-    // Phase 2: Stem Growth (20% -> 85%)
-    if (p > 0.18) {
-      const stemProg = Math.min(1, (p - 0.18) / 0.65);
-      const easeStem = Math.sin((stemProg * Math.PI) / 2);
-      stem.scale.set(
-        Math.min(1, 0.35 + easeStem * 0.65),
-        easeStem,
-        Math.min(1, 0.35 + easeStem * 0.65)
-      );
-      stem.rotation.z = -0.05 + Math.sin(elapsed * 2.5) * 0.025;
-    }
-
-    // Phase 3: Leaves Blooming & Unfurling (45% -> 100%)
-    if (p > 0.45) {
-      const leafProg = Math.min(1, (p - 0.45) / 0.55);
-      const leafScale = Math.sin((leafProg * Math.PI) / 2);
-
-      // Left Leaf
-      leaf1.scale.set(leafScale * 0.95, leafScale * 0.95, leafScale * 0.95);
-      leaf1.rotation.z = -0.1 - leafProg * 0.82;
-      leaf1.rotation.x = 0.16 + Math.sin(elapsed * 2.2) * 0.05;
-      leaf1.rotation.y = -leafProg * 0.35;
-
-      // Right Leaf
-      leaf2.scale.set(leafScale * 0.95, leafScale * 0.95, leafScale * 0.95);
-      leaf2.rotation.z = 0.1 + leafProg * 0.82;
-      leaf2.rotation.x = -0.16 + Math.sin(elapsed * 2.2 + 1) * 0.05;
-      leaf2.rotation.y = leafProg * 0.35;
-
-      // Apex Bud
-      if (p > 0.72) {
-        const budProg = (p - 0.72) / 0.28;
-        budMesh.scale.setScalar(budProg * 1.1);
-      }
-    }
-
-    // Light pulse towards completion
-    if (p > 0.88) {
-      greenPoint.intensity = 2.8 + Math.sin(elapsed * 7) * 1.2;
-      particleMat.opacity = 0.9;
-    }
-
-    renderer.render(scene, camera);
-    reqId = requestAnimationFrame(renderLoop);
-  }
-
-  reqId = requestAnimationFrame(renderLoop);
-
-  return {
-    setProgress: (val) => { currentProgress = val; },
-    destroy: () => {
-      if (reqId) cancelAnimationFrame(reqId);
-      window.removeEventListener('resize', handleResize);
-      try {
-        renderer.dispose();
-        if (renderer.domElement && renderer.domElement.parentNode) {
-          renderer.domElement.parentNode.removeChild(renderer.domElement);
-        }
-      } catch (e) {}
-    }
-  };
-}
-
 let scene1EntrancePlayed = false;
 
 function playScene1Entrance() {
@@ -722,7 +311,8 @@ function playScene1Entrance() {
   gsap.set(s1, { opacity: 1 });
 
   const entranceTl = gsap.timeline({
-    defaults: { ease: 'power3.out' }
+    defaults: { ease: 'power3.out' },
+    delay: 0.2
   });
 
   entranceTl
@@ -1065,26 +655,23 @@ function buildStoryTimeline() {
     .to(s2, { opacity: 0, duration: 1.5 });
 
   /* 
-     SCENE 3: "CADA MES. SIN ESFUERZO."
+     SCENE 3: "?QU? INCLUYE EL KIT?"
       */
   const s3 = '#s3';
   tl
     .set(s3, { opacity: 1 })
-    .fromTo(`${s3} .st`, { opacity: 0, y: 80, scale: 0.7 },
-      { opacity: 1, y: 0, scale: 1, duration: 2.5, ease: 'power3.out' })
-    .fromTo(`${s3} .ss`, { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 2, ease: 'power2.out' }, '-=1.5')
-    .fromTo(`${s3} .si1`, { y: '100%', opacity: 0, scale: 0.6 },
-      { y: '0%', opacity: 1, scale: 1, duration: 3, ease: 'power3.out' }, '<0.2')
-    .fromTo(`${s3} .si2`, { x: '100%', y: '50%', opacity: 0, rotation: 10 },
-      { x: '0%', y: '0%', opacity: 1, rotation: 3, duration: 3, ease: 'power3.out' }, '<0.4')
+    .fromTo(`${s3} .st`, { opacity: 0, y: 60, scale: 0.85 },
+      { opacity: 1, y: 0, scale: 1, duration: 2.2, ease: 'power2.out' })
+    .fromTo(`${s3} .si1`, { x: '-60%', y: '10%', opacity: 0, scale: 0.9 },
+      { x: '0%', y: '0%', opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' }, '<0.15')
+    .fromTo(`${s3} .si2`, { x: '60%', y: '10%', opacity: 0, scale: 0.9 },
+      { x: '0%', y: '0%', opacity: 1, scale: 1, duration: 2.2, ease: 'power2.out' }, '<0.1')
     .addLabel('scene_3')
-    .to({}, { duration: 1.5 })
-    .to(`${s3} .st`, { scale: 4.5, y: -100, opacity: 0.12, duration: 4, ease: 'power1.in' })
-    .to(`${s3} .ss`, { opacity: 0, y: -50, duration: 2 }, '<')
-    .to(`${s3} .si1`, { y: '-60%', scale: 1.4, duration: 4, ease: 'power1.in' }, '<')
-    .to(`${s3} .si2`, { x: '50%', y: '-40%', scale: 1.5, rotation: 15, duration: 4 }, '<')
-    .to(s3, { opacity: 0, duration: 1.5 });
+    .to({}, { duration: 3.5 })
+    .to(`${s3} .st`, { scale: 3.5, y: -70, opacity: 0, duration: 3.5, ease: 'power1.in' })
+    .to(`${s3} .si1`, { x: '-40%', y: '-30%', scale: 1.2, opacity: 0, duration: 3.5, ease: 'power1.in' }, '<')
+    .to(`${s3} .si2`, { x: '40%', y: '-30%', scale: 1.2, opacity: 0, duration: 3.5, ease: 'power1.in' }, '<')
+    .to(s3, { opacity: 0, duration: 1 });
 
   /* 
      SCENE 4: "24,90€ AL MES" (Price reveal)
