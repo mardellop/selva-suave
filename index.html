@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Selva suave</title>
   <meta name="description" content="Ecommerce de suscripción mensual destinado al cuidado de plantas de interior.">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,21 +13,6 @@
 </head>
 <body>
   <audio id="bg-music" src="musica-fondo.mp3" preload="auto" loop></audio>
-
-  <!-- PRELOADER -->
-  <div id="preloader">
-    <div class="pre-brand">Selva suave</div>
-    <div class="pre-seed-wrap">
-      <div class="pre-seed-glow"></div>
-      <div id="seed-canvas-container"></div>
-      <div class="pre-seed-status" id="pre-seed-status"></div>
-    </div>
-
-    <div class="pre-bar-track">
-      <div class="pre-bar-fill" id="pre-bar"></div>
-    </div>
-    <div class="pre-pct" id="pre-pct">0%</div>
-  </div>
 
   <!-- HEADER -->
   <header class="site-header">
@@ -41,6 +25,7 @@
       <a href="#datos-sector">Datos del sector</a>
       <a href="#razones">Por qué funciona</a>
       <a href="#ia">Uso de la IAG</a>
+      <a href="#bibliografia">Bibliografía</a>
       <a href="#autoria">Autoría del trabajo</a>
       <button id="music-toggle" class="music-toggle-btn" type="button" aria-label="Control de música" title="Música ambiental">
         <span class="music-bars">
@@ -104,7 +89,7 @@
         <ul class="kit-list">
           <li>- Nutrición líquida</li>
           <li>- Sustrato y tierra</li>
-          <li>- Herramienta del mes</li>
+          <li>- Herramienta útil</li>
           <li>- Ayuda experta</li>
         </ul>
       </div>
@@ -133,7 +118,7 @@
         ¿Y SI DARLE VIDA A TU CASA<br><em>CUPIERA EN UNA CAJA?</em>
       </div>
       <div class="scene-subtext ss" style="bottom:12%; left:51%; transform:translateX(-50%); max-width:min(600px, 86vw); text-align:justify; color:#000">
-        Selva Suave es un ecommerce D2C de suscripción mensual pensado para aquellas personas que viven en pisos pequeños y no quieren que se les mueran las plantas. Cada mes, la marca enviará una caja con lo necesario para cuidarlas (nutrición, sustrato, alguna herramienta y un código QR para hablar con un experto por si surgen dudas). De esta manera, el cliente puede mantener la casa bonita sin complicarse la vida y sin tener que llenar el trastero de sacos gigantes. A continuación, veremos las razones de por qué este ecommerce puede funcionar.
+        Selva Suave es un ecommerce D2C de suscripción mensual pensado para aquellas personas que viven en pisos pequeños y que quieren mantener sus plantas sanas. Cada mes, la marca enviará una caja con lo necesario para cuidarlas (nutrición, sustrato, una herramienta útil y un código QR para hablar con un experto por si surgen dudas). De esta manera, el cliente puede mantener la casa bonita sin complicarse la vida y sin tener que llenar el trastero de sacos gigantes.
       </div>
     </div>
   </div>
@@ -191,21 +176,66 @@
           Según los datos del estudio de IAB Spain, el 38% adquiere productos de “Hogar y decoración” de forma online, siendo una de las categorías más compradas por internet. Actualmente, existe un grupo de personas que invierten su dinero en comprar plantas de interior para decorar su hogar.
         </p>
 <p class="ps-body rv">
-          Asimismo, el 25% ha comprado productos de bricolaje y jardín en 2025, lo que demuestra que hay interés en adquirir este tipo de productos a través de internet. Los suministros de jardinería tradicionales, como los sacos de tierra de 10-20L, las herramientas o los fertilizantes, son pesados e incómodos de transportar. Sin embargo, gracias al comercio electrónico, Selva suave elimina esa barrera, ya que ofrece kits mensuales de reducidas dimensiones y fáciles de transportar.
+          Asimismo, el 25% ha comprado productos de bricolaje y jardín en 2025, lo que demuestra que hay interés en adquirir este tipo de producto a través de internet. Los suministros de jardinería tradicionales, como las herramientas o los sacos de tierra de 10-20L, son pesados e incómodos de transportar. Sin embargo, Selva suave elimina este problema, ya que ofrece kits mensuales de reducidas dimensiones y fáciles de transportar.
         </p>
 <p class="ps-body rv">
 Por tanto, Selva suave se posiciona en la intersección entre decoración (la planta luce bien) y el cuidado (las herramientas y nutrientes para mantener la planta sana).
         </p>
       </div>
-      <div class="ps-img rv">
+      <div class="ps-img rv" style="position:relative; overflow:visible;">
+        <!-- Monigote jardinero PNG superpuesto sobre la tarjeta -->
+        <img
+          src="monigote-jardinero.png"
+          alt="Monigote jardinero"
+          style="
+            position: absolute;
+            top: -130px;
+            right: -150px;
+            width: 400px;
+	    height: auto;
+            z-index: 5;
+            pointer-events: none;
+            animation: monigoteBreathe 3.2s ease-in-out infinite;
+            transform-origin: center bottom;
+          "
+        >
+        <style>
+          @keyframes monigoteBreathe {
+            0%,100% { transform: scale(1); }
+            50%      { transform: scale(1.03); }
+          }
+        </style>
         <img src="estudio-iab.png" alt="Estudio de IAB Spain">
       </div>
     </div>
 
     <div class="ps-split">
       <h2 class="ps-heading ps-split-title rv">2. Porque con el Live Shopping se resuelven dudas y se pueden multiplicar las ventas.</h2>
-      <div class="ps-img rv">
-        <img src="live-shopping.png">
+      <div class="ps-img rv" style="position:relative; overflow:visible; margin-top: 25px;">
+        <!-- Monigote observando Live Shopping superpuesto en medio por arriba -->
+        <img
+          src="monigote-live-shopping.png"
+          alt="Monigote redes sociales Live Shopping"
+          style="
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: auto;
+            z-index: 5;
+            pointer-events: none;
+            animation: monigoteLiveBreathe 3.2s ease-in-out infinite;
+            transform-origin: center bottom;
+          "
+        >
+        <style>
+          @keyframes monigoteLiveBreathe {
+            0%,100% { transform: translateX(-50%) scale(1); }
+            50%      { transform: translateX(-50%) scale(1.03); }
+          }
+        </style>
+        <img src="live-shopping.png" alt="Live Shopping">
       </div>
       <div>
         <p class="ps-body rv">
@@ -222,6 +252,7 @@ Por tanto, Selva suave se posiciona en la intersección entre decoración (la pl
 
     <div class="ps-split">
       <h2 class="ps-heading ps-split-title rv">3. Porque integra la inteligencia artificial y chatbot en WhatsApp</h2>
+    
       <div>
 <p class="ps-body"; style = "text-align: center; margin-top:-20px; font-weight: bold; font-size: 1.3rem";>
 (El simulador de chatbot es interactivo)
@@ -236,7 +267,7 @@ Al igual que en el caso de Vilma Núñez, Selva suave podría publicar un reel e
 El kit incluye también un código QR para que los clientes contacten con un chatbot en WhatsApp. Allí, se resolverán al instante las dudas más frecuentes sobre el cuidado, el riego o la identificación de plagas. La IA se encarga de filtra y responder estas consultas, y deriva al soporte humano aquellos casos más complejos que necesiten una atención personalizada.
         </p>
       </div>
-      <div class="rv" style="display:flex; justify-content:center;">
+      <div class="rv" style="display:flex; justify-content:center; align-items:center; gap:0; margin-top:40px;">
         <div class="wa-mockup-wrapper">
           <div class="wa-phone">
             <!-- Dynamic Island / Speaker notch -->
@@ -321,13 +352,53 @@ El kit incluye también un código QR para que los clientes contacten con un cha
             </div>
           </div>
         </div>
+        <!-- Monigote robot a la derecha del chatbot -->
+        <img
+          src="monigote-robot.png"
+          alt="Monigote robot"
+          style="
+            width: 150px;
+            height: auto;
+            align-self: center;
+            margin-left: 4px;
+            animation: monigoteRobotBreathe 3.2s ease-in-out infinite;
+          "
+        />
+        <style>
+          @keyframes monigoteRobotBreathe {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-8px); }
+          }
+        </style>
       </div>
     </div>
 
     <div class="ps-split">
       <h2 class="ps-heading ps-split-title rv">4. Porque responde a las principales exigencias y prioridades del consumidor actual.</h2>
-      <div class="ps-img rv">
-        <img src="drivers-compra.png">
+ <div class="ps-img rv" style="position:relative; overflow:visible; margin-top: 25px;">
+        <img
+          src="monigote-consumidor.png"
+          alt="Monigote consumidor"
+          style="
+            position: absolute;
+            top: -125px;
+            left: 75%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: auto;
+            z-index: 5;
+            pointer-events: none;
+            animation: monigoteLiveBreathe 3.2s ease-in-out infinite;
+            transform-origin: center bottom;
+          "
+        >
+        <style>
+          @keyframes monigoteLiveBreathe {
+            0%,100% { transform: translateX(-50%) scale(1); }
+            50%      { transform: translateX(-50%) scale(1.03); }
+          }
+        </style>
+        <img src="drivers-compra.png" alt="Drivers Compra">
       </div>
       <div>
         <p class="ps-body rv">
@@ -538,10 +609,169 @@ Por último, el 52% de los compradores valoran positivamente los ecommerce que e
       </div>
     </div>
 
+    <!-- ─── BIBLIOGRAFÍA ─── -->
+    <div class="ps-section" id="bibliografia" style="padding: 60px 32px 70px;">
+
+      <div style="text-align:center; margin-bottom: 48px;">
+        <h2 class="ps-heading" style="margin-bottom: 0.4rem;">Bibliografía</h2>
+        <p style="color: var(--c-muted); font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0;">Fuentes consultadas</p>
+        <div style="width: 60px; height: 3px; background: linear-gradient(90deg, var(--c-green), var(--c-lime)); border-radius: 999px; margin: 16px auto 0;"></div>
+      </div>
+
+      <!-- Grid de referencias -->
+      <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        max-width: 1100px;
+        margin: 0 auto;
+      ">
+
+        <!-- Referencia 1 -->
+        <div class="bib-card" style="
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-left: 4px solid var(--c-green);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+          transition: transform 0.25s, box-shadow 0.25s;
+        "
+        onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+        >
+          <div style="font-size:1.6rem; line-height:1; flex-shrink:0;">📊</div>
+          <div>
+            <p style="margin:0 0 4px; font-size:0.78rem; color:var(--c-lime); text-transform:uppercase; letter-spacing:0.07em; font-weight:700;">Estudio de mercado</p>
+            <p style="margin:0; font-size:0.88rem; line-height:1.6; color:var(--c-cream);">Magazine, G. (2025). <em>Radiografía de los consumidores digitales españoles.</em> Google Magazine.</p>
+          </div>
+        </div>
+
+        <!-- Referencia 2 -->
+        <div class="bib-card" style="
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-left: 4px solid var(--c-terra);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+          transition: transform 0.25s, box-shadow 0.25s;
+        "
+        onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+        >
+          <div style="font-size:1.6rem; line-height:1; flex-shrink:0;">🛒</div>
+          <div>
+            <p style="margin:0 0 4px; font-size:0.78rem; color:var(--c-terra); text-transform:uppercase; letter-spacing:0.07em; font-weight:700;">E-commerce</p>
+            <p style="margin:0; font-size:0.88rem; line-height:1.6; color:var(--c-cream);">IAB Spain (2024). <em>Estudio Anual de E-Commerce 2024.</em> IAB Spain Research.</p>
+          </div>
+        </div>
+
+        <!-- Referencia 3 -->
+        <div class="bib-card" style="
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-left: 4px solid var(--c-lime);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+          transition: transform 0.25s, box-shadow 0.25s;
+        "
+        onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+        >
+          <div style="font-size:1.6rem; line-height:1; flex-shrink:0;">📱</div>
+          <div>
+            <p style="margin:0 0 4px; font-size:0.78rem; color:var(--c-lime); text-transform:uppercase; letter-spacing:0.07em; font-weight:700;">Redes sociales</p>
+            <p style="margin:0; font-size:0.88rem; line-height:1.6; color:var(--c-cream);">IAB Spain (2024). <em>Estudio Anual de Redes Sociales 2024.</em> IAB Spain Research.</p>
+          </div>
+        </div>
+
+        <!-- Referencia 4 -->
+        <div class="bib-card" style="
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-left: 4px solid var(--c-green);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+          transition: transform 0.25s, box-shadow 0.25s;
+        "
+        onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+        >
+          <div style="font-size:1.6rem; line-height:1; flex-shrink:0;">🤖</div>
+          <div>
+            <p style="margin:0 0 4px; font-size:0.78rem; color:var(--c-lime); text-transform:uppercase; letter-spacing:0.07em; font-weight:700;">Inteligencia artificial</p>
+            <p style="margin:0; font-size:0.88rem; line-height:1.6; color:var(--c-cream);">McKinsey & Company (2024). <em>The state of AI in 2024.</em> McKinsey Global Institute.</p>
+          </div>
+        </div>
+
+        <!-- Referencia 5 -->
+        <div class="bib-card" style="
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-left: 4px solid var(--c-terra);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+          transition: transform 0.25s, box-shadow 0.25s;
+        "
+        onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+        >
+          <div style="font-size:1.6rem; line-height:1; flex-shrink:0;">🌿</div>
+          <div>
+            <p style="margin:0 0 4px; font-size:0.78rem; color:var(--c-terra); text-transform:uppercase; letter-spacing:0.07em; font-weight:700;">Sostenibilidad</p>
+            <p style="margin:0; font-size:0.88rem; line-height:1.6; color:var(--c-cream);">Nielsen (2023). <em>Sustainability Imperative: New Insights on Consumer Expectations.</em> NielsenIQ.</p>
+          </div>
+        </div>
+
+        <!-- Referencia 6 -->
+        <div class="bib-card" style="
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-left: 4px solid var(--c-lime);
+          border-radius: 12px;
+          padding: 20px 22px;
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+          transition: transform 0.25s, box-shadow 0.25s;
+        "
+        onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseleave="this.style.transform='translateY(0)';this.style.boxShadow='none'"
+        >
+          <div style="font-size:1.6rem; line-height:1; flex-shrink:0;">💬</div>
+          <div>
+            <p style="margin:0 0 4px; font-size:0.78rem; color:var(--c-lime); text-transform:uppercase; letter-spacing:0.07em; font-weight:700;">Live Shopping</p>
+            <p style="margin:0; font-size:0.88rem; line-height:1.6; color:var(--c-cream);">Núñez, V. (2024). <em>Cómo vender en directo en redes sociales.</em> VilmaNunez.com Blog.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Nota al pie -->
+      <p style="text-align:center; margin-top: 40px; font-size:0.8rem; color:rgba(255,255,255,0.35); letter-spacing:0.04em;">
+        * Las fuentes han sido consultadas entre septiembre y noviembre de 2026 con fines académicos.
+      </p>
+
+    </div>
+
     <!-- ─── AUTORÍA ─── -->
     <div class="cta-section" id="autoria">
       <h2 class="ps-heading rv" style="color:var(--c-cream); text-align:center;">
-        Realidad digital | Trabajo realizado por<br><em style="color:var(--c-cream);">María de los Reyes Delgado López</em>
+        Realidad digital | Trabajo realizado por<br><em style="color:var(--c-cream);">invertir en verde</em>
       </h2>
     </div>
 
