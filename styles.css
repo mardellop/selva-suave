@@ -344,6 +344,9 @@ html, body {
   letter-spacing: -0.02em;
   white-space: nowrap;
   will-change: transform, opacity;
+  transform-origin: center center;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   z-index: 3;
   /* Contraste y legibilidad óptima al superponerse sobre imágenes */
   paint-order: stroke fill;
@@ -354,8 +357,7 @@ html, body {
     0 0 0.6em var(--c-bg),
     0 0 0.9em rgba(235, 230, 223, 0.95),
     0 0 1.4em rgba(235, 230, 223, 0.85);
-  filter: drop-shadow(0 0 12px rgba(235, 230, 223, 0.95)) drop-shadow(0 0 24px rgba(235, 230, 223, 0.85));
-}
+  }
 
 .scene-text em {
   font-style: italic;
@@ -409,22 +411,28 @@ html, body {
 
 .scene-subtext {
   position: absolute;
+  left: 0 !important;
+  right: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   font-family: var(--ff-sans);
-  font-size: clamp(0.85rem, 1.3vw, 1rem);
-  color: #000;
-  text-align: center;
-  max-width: 440px;
-  line-height: 1.6;
+  font-size: clamp(0.9rem, 1.25vw, 1.05rem);
+  color: #111111;
+  text-align: justify;
+  width: 90%;
+  max-width: min(650px, 86vw);
+  line-height: 1.65;
   font-weight: 400;
   will-change: transform, opacity;
-  z-index: 3;
+  transform-origin: center center;
+  z-index: 6;
   white-space: normal;
   paint-order: stroke fill;
   -webkit-text-stroke: 0.04em var(--c-bg);
   text-shadow:
     0 0 0.15em var(--c-bg),
     0 0 0.35em var(--c-bg),
-    0 0 0.6em rgba(235, 230, 223, 0.9);
+    0 0 0.6em rgba(235, 230, 223, 0.95);
 }
 
 /* Scene images */
@@ -1522,7 +1530,8 @@ html, body {
   height: 100vh;
   width: 1500vw;
   will-change: transform;
-  transition: transform 1.05s cubic-bezier(0.25, 1, 0.3, 1);
+  transform: translate3d(0, 0, 0);
+  transition: none !important;
 }
 
 .presentation-slide {
@@ -1582,6 +1591,8 @@ html, body {
   margin: auto;
   position: relative;
   z-index: 2;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 /* Slide 6: Estadísticas destacadas */
@@ -1832,34 +1843,76 @@ html, body {
 /* 2. Split compacto para las 4 razones sin scroll vertical */
 .compact-split {
   display: grid !important;
-  grid-template-columns: 1.15fr 0.85fr !important;
-  gap: clamp(1rem, 2.2vw, 2rem) !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: clamp(1rem, 2vw, 2.2rem) !important;
   align-items: center !important;
-  max-width: 1120px !important;
+  max-width: 1220px !important;
+  width: 100% !important;
   margin: 0 auto !important;
   padding: 0 !important;
+}
+
+/* En Razón 2 y Razón 4: La imagen queda ceñida y el texto se mete hacia la izquierda */
+#slide-razon-2 .compact-split,
+#slide-razon-4 .compact-split {
+  grid-template-columns: minmax(280px, 0.72fr) 1.28fr !important;
+}
+
+/* En Razón 1: El texto tiene espacio prioritario y la imagen queda a la derecha */
+#slide-razon-1 .compact-split {
+  grid-template-columns: 1.28fr minmax(280px, 0.72fr) !important;
+}
+
+/* Espacio vertical optimizado en los 4 slides de razones para eliminar cualquier scroll */
+#slide-razon-1,
+#slide-razon-2,
+#slide-razon-3,
+#slide-razon-4 {
+  padding-top: clamp(48px, 6.2vh, 65px) !important;
+  padding-bottom: clamp(20px, 3vh, 35px) !important;
+}
+
+/* Mover el título de la razón 2 y la razón 4 más arriba para evitar solapamiento con el monigote */
+#slide-razon-2 .ps-split-title,
+#slide-razon-4 .ps-split-title {
+  margin-top: clamp(-22px, -2.8vh, -12px) !important;
+  margin-bottom: clamp(1.6rem, 2.8vh, 2.4rem) !important;
 }
 
 .compact-split .ps-split-title {
   grid-column: 1 / -1 !important;
   margin-bottom: 0.35rem !important;
-  font-size: clamp(1.1rem, 1.6vw, 1.45rem) !important;
+  font-size: clamp(1.12rem, 1.6vw, 1.45rem) !important;
   line-height: 1.22 !important;
 }
 
 .compact-split .ps-body {
-  font-size: clamp(0.76rem, 0.94vw, 0.86rem) !important;
-  line-height: 1.48 !important;
-  margin-bottom: 5px !important;
+  max-width: none !important;
+  font-size: clamp(0.78rem, 0.94vw, 0.88rem) !important;
+  line-height: 1.44 !important;
+  margin-bottom: clamp(4px, 0.7vh, 7px) !important;
   text-align: justify !important;
   color: #2C3529 !important;
 }
 
-.split-card-img {
-  max-height: clamp(210px, 33vh, 290px) !important;
-  width: 100% !important;
+/* Eliminación total de espacios vacíos laterales de las imágenes */
+.compact-split .ps-img {
+  width: fit-content !important;
+  max-width: 100% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+  margin: 0 auto !important;
+}
+
+.compact-split .split-card-img {
+  max-height: clamp(230px, 37vh, 320px) !important;
+  width: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
   object-fit: contain !important;
   border-radius: 14px !important;
+  box-shadow: 0 14px 35px -10px rgba(0, 0, 0, 0.16) !important;
   display: block !important;
 }
 
@@ -1867,9 +1920,10 @@ html, body {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  width: 100% !important;
 }
 
-/* 3. Monigotes ajustados proporcionalmente */
+/* 3. Monigotes ajustados proporcionalmente con animación de respirar */
 .monigote-floating {
   position: absolute !important;
   pointer-events: none !important;
@@ -1877,6 +1931,7 @@ html, body {
   transform-origin: center bottom !important;
 }
 
+/* Razón 1: Monigote jardinero */
 .monigote-jardinero-img {
   top: -85px !important;
   right: -60px !important;
@@ -1885,30 +1940,69 @@ html, body {
   animation: monigoteBreathe 3.2s ease-in-out infinite !important;
 }
 
+/* Razón 2: Monigote Live Shopping (apoyado en el centro del móvil) */
 .monigote-live-img {
   top: -55px !important;
   left: 50% !important;
-  transform: translateX(-50%) !important;
   width: clamp(75px, 8vw, 90px) !important;
   height: auto !important;
   animation: monigoteLiveBreathe 3.2s ease-in-out infinite !important;
 }
 
+/* Razón 4: Monigote Consumidor (apoyado a la derecha sobre drivers de compra) */
 .monigote-consumidor-img {
   top: -85px !important;
   left: 75% !important;
-  transform: translateX(-50%) !important;
   width: clamp(180px, 20vw, 230px) !important;
   height: auto !important;
-  animation: monigoteLiveBreathe 3.2s ease-in-out infinite !important;
+  animation: monigoteConsumidorBreathe 3.2s ease-in-out infinite !important;
 }
 
+/* Razón 3: Monigote Robot (al lado del chatbot de WhatsApp) */
 .monigote-robot-img {
   width: clamp(115px, 12vw, 135px) !important;
   height: auto !important;
   align-self: center !important;
   margin-left: 6px !important;
+  transform-origin: center bottom !important;
   animation: monigoteRobotBreathe 3.2s ease-in-out infinite !important;
+}
+
+/* Keyframes de respiración independientes para cada monigote */
+@keyframes monigoteBreathe {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.03, 1.05) rotate(1.5deg);
+  }
+}
+
+@keyframes monigoteLiveBreathe {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-7px) scale(1.03, 1.05);
+  }
+}
+
+@keyframes monigoteConsumidorBreathe {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px) scale(1.03, 1.05) rotate(1deg);
+  }
+}
+
+@keyframes monigoteRobotBreathe {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.03, 1.04) rotate(-1.5deg);
+  }
 }
 
 /* 4. Razón 3 (Simulador de WhatsApp compacto) */
