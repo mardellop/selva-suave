@@ -1,9 +1,3 @@
-/**
- * SELVA SUAVE - PRESENTACIÓN HORIZONTAL (MODO POWERPOINT / CANVA)
- * Desplazamiento horizontal de diapositivas a la derecha con flechas de avance/retroceso,
- * manteniendo todas las animaciones, efectos, chatbot y música de fondo.
- */
-
 let currentSlideIndex = 0;
 const TOTAL_SLIDES = 15;
 let isSlideTransitioning = false;
