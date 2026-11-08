@@ -1,3 +1,9 @@
+/**
+ * SELVA SUAVE - PRESENTACIÓN HORIZONTAL (MODO POWERPOINT / CANVA)
+ * Desplazamiento horizontal de diapositivas a la derecha con flechas de avance/retroceso,
+ * manteniendo todas las animaciones, efectos, chatbot y música de fondo.
+ */
+
 let currentSlideIndex = 0;
 const TOTAL_SLIDES = 15;
 let isSlideTransitioning = false;
@@ -143,14 +149,19 @@ function initPresentationDeck() {
   }, { passive: true });
 }
 
+let currentTransitionTimeline = null;
+
 /**
- * Transición suave a una diapositiva específica
+ * Transición suave, continua y ultra fluida (60 FPS estables vía GSAP Timeline unificado)
  */
 function goToSlide(targetIndex, instant = false) {
-  // Limitar índice entre 0 y el total de diapositivas
+  // Proteger la fluidez mientras dura la transición
+  if (isSlideTransitioning && !instant) return;
+
   targetIndex = Math.max(0, Math.min(TOTAL_SLIDES - 1, targetIndex));
   if (targetIndex === currentSlideIndex && !instant) return;
 
+  const prevSlideIndex = currentSlideIndex;
   currentSlideIndex = targetIndex;
   isSlideTransitioning = true;
 
@@ -160,20 +171,7 @@ function goToSlide(targetIndex, instant = false) {
   const currentNumEl = document.getElementById('slide-current-num');
   const progressFill = document.getElementById('progress-fill');
 
-  // Desplazamiento horizontal de la pista de diapositivas hacia la derecha / izquierda
-  if (track) {
-    if (instant) {
-      track.style.transition = 'none';
-      track.style.transform = `translateX(-${currentSlideIndex * 100}vw)`;
-      // Forzar reflow para que el siguiente movimiento tenga transición
-      void track.offsetWidth;
-      track.style.transition = 'transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)';
-    } else {
-      track.style.transform = `translateX(-${currentSlideIndex * 100}vw)`;
-    }
-  }
-
-  // Actualizar estado de las flechas de avanzar y retroceder
+  // Actualizar estado de las flechas
   if (prevBtn) {
     const isFirst = currentSlideIndex === 0;
     prevBtn.disabled = isFirst;
@@ -186,7 +184,7 @@ function goToSlide(targetIndex, instant = false) {
     nextBtn.classList.toggle('disabled', isLast);
   }
 
-  // Actualizar indicador numérico (ej. 01 / 13)
+  // Actualizar contador numérico
   if (currentNumEl) {
     currentNumEl.textContent = String(currentSlideIndex + 1).padStart(2, '0');
   }
@@ -197,15 +195,71 @@ function goToSlide(targetIndex, instant = false) {
     progressFill.style.width = `${pct}%`;
   }
 
-  // Actualizar enlace activo en el menú del header
+  // Actualizar menú superior activo
   updateHeaderActiveLink(currentSlideIndex);
 
-  // Ejecutar las animaciones y efectos del slide activo
-  playSlideAnimations(currentSlideIndex);
-
-  setTimeout(() => {
+  // Inicialización instantánea (primer render)
+  if (instant || prevSlideIndex === currentSlideIndex) {
+    if (track) {
+      gsap.killTweensOf(track);
+      gsap.set(track, { x: -currentSlideIndex * window.innerWidth });
+    }
+    playSlideAnimations(currentSlideIndex, true);
     isSlideTransitioning = false;
-  }, 1080);
+    return;
+  }
+
+  // Detener timeline previa si hubiera alguna activa
+  if (currentTransitionTimeline) {
+    currentTransitionTimeline.kill();
+  }
+
+  const outgoingSlide = document.querySelector(`.presentation-slide[data-index="${prevSlideIndex}"]`);
+  const outTexts = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-text, .scene-subtext, .stats-heading, .ps-section-title, .ps-heading, .razones-intro-box') : null;
+  const outImages = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-img, .ps-img-wrap') : null;
+
+  // Timeline unificada: elimina cualquier conflicto entre CSS y JS, garantizando fluidez total
+  const tl = gsap.timeline({
+    onComplete: () => {
+      isSlideTransitioning = false;
+      // Restaurar estado limpio del slide que salió
+      if (outTexts && outTexts.length > 0) gsap.set(outTexts, { clearProps: 'transform,opacity' });
+      if (outImages && outImages.length > 0) gsap.set(outImages, { clearProps: 'transform,opacity' });
+    }
+  });
+  currentTransitionTimeline = tl;
+
+  // 1. FASE DE ZOOM IN: El texto se acerca suavemente a la pantalla hasta disolverse al pasar a la siguiente diapositiva
+  if (outTexts && outTexts.length > 0) {
+    tl.to(outTexts, {
+      scale: 2.2,
+      opacity: 0,
+      duration: 0.65,
+      ease: 'power1.in',
+      transformOrigin: 'center center'
+    }, 0);
+  }
+
+  if (outImages && outImages.length > 0) {
+    tl.to(outImages, {
+      opacity: 0.3,
+      scale: 1.05,
+      duration: 0.55,
+      ease: 'power1.out'
+    }, 0);
+  }
+
+  // 2. FASE DE DESPLAZAMIENTO: Cuando el texto se ha acercado a la pantalla, la pista viaja con máxima suavidad
+  if (track) {
+    tl.to(track, {
+      x: -currentSlideIndex * window.innerWidth,
+      duration: 1.15,
+      ease: 'power2.inOut'
+    }, 0.32);
+  }
+
+  // 3. FASE DE ENTRADA: El contenido del nuevo slide entra de forma fluida y cinematográfica
+  playSlideAnimations(currentSlideIndex, false, tl, 0.72);
 }
 
 /**
@@ -246,112 +300,147 @@ function initHeaderNav() {
 }
 
 /**
- * ANIMACIONES GSAP PARA CADA DIAPOSITIVA (Conserva todas las animaciones originales)
+ * ANIMACIONES GSAP PARA CADA DIAPOSITIVA (Fluidez máxima a 60 FPS coordinada con el Timeline)
  */
-const playedSlideAnimations = {};
+function playSlideAnimations(index, instant = false, timeline = null, startTime = 0) {
+  const tl = timeline;
+  const anim = (target, fromVars, toVars, offset = 0) => {
+    if (tl) {
+      tl.fromTo(target, fromVars, toVars, startTime + offset);
+    } else {
+      toVars.delay = (toVars.delay || 0) + (instant ? 0 : offset);
+      gsap.fromTo(target, fromVars, toVars);
+    }
+  };
 
-function playSlideAnimations(index) {
-  // Limpiar animaciones previas activas de este slide si las hubiera
   switch (index) {
     case 0:
       // Diapositiva 1: Escena 1
-      gsap.fromTo('#s1 .st',
-        { opacity: 0, scale: 0.85, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 2.8, ease: 'power2.out' }
+      anim('#s1 .st',
+        { opacity: 0, scale: 0.8, y: 18 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'power2.out' },
+        0
       );
-      gsap.fromTo('#s1 .si1',
-        { opacity: 0, x: '-80%', rotation: -8 },
-        { opacity: 1, x: '0%', rotation: 0, duration: 2.0, ease: 'power2.out', delay: 0.2 }
+      anim('#s1 .si1',
+        { opacity: 0, x: '-60%', rotation: -6 },
+        { opacity: 1, x: '0%', rotation: 0, duration: 1.0, ease: 'power2.out' },
+        0.1
       );
-      gsap.fromTo('#s1 .si2',
-        { opacity: 0, x: '80%', rotation: 6 },
-        { opacity: 1, x: '0%', rotation: 0, duration: 2.0, ease: 'power2.out', delay: 0.3 }
+      anim('#s1 .si2',
+        { opacity: 0, x: '60%', rotation: 5 },
+        { opacity: 1, x: '0%', rotation: 0, duration: 1.0, ease: 'power2.out' },
+        0.18
       );
-      gsap.fromTo('#scene1-scroll-hint',
+      anim('#scene1-scroll-hint',
         { opacity: 0, y: 15 },
-        { opacity: 0.9, y: 0, duration: 1.3, delay: 0.7 }
+        { opacity: 0.9, y: 0, duration: 0.8 },
+        0.35
       );
       break;
 
     case 1:
       // Diapositiva 2: Escena 2
-      gsap.fromTo('#s2 .st',
-        { opacity: 0, scale: 0.85, y: 30 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.8, ease: 'power2.out' }
+      anim('#s2 .st',
+        { opacity: 0, scale: 0.8, y: 18 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'power2.out' },
+        0
       );
-      gsap.fromTo('#s2 .si1',
-        { opacity: 0, x: '-90%', rotation: -10 },
-        { opacity: 1, x: '0%', rotation: -3, duration: 2.0, ease: 'power2.out', delay: 0.2 }
+      anim('#s2 .si1',
+        { opacity: 0, x: '-70%', rotation: -8 },
+        { opacity: 1, x: '0%', rotation: -3, duration: 1.0, ease: 'power2.out' },
+        0.1
       );
-      gsap.fromTo('#s2 .si2',
-        { opacity: 0, x: '90%', rotation: 8 },
-        { opacity: 1, x: '0%', rotation: 2, duration: 2.0, ease: 'power2.out', delay: 0.3 }
+      anim('#s2 .si2',
+        { opacity: 0, x: '70%', rotation: 6 },
+        { opacity: 1, x: '0%', rotation: 2, duration: 1.0, ease: 'power2.out' },
+        0.18
       );
       break;
 
     case 2:
       // Diapositiva 3: Escena 3
-      gsap.fromTo('#s3 .st',
-        { opacity: 0, scale: 0.9, y: 35 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.8, ease: 'power2.out' }
+      anim('#s3 .st',
+        { opacity: 0, scale: 0.82, y: 22 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'power2.out' },
+        0
       );
-      gsap.fromTo('#s3 .si1',
-        { opacity: 0, x: '-70%', y: '15%' },
-        { opacity: 1, x: '0%', y: '0%', duration: 1.9, ease: 'power2.out', delay: 0.2 }
+      anim('#s3 .si1',
+        { opacity: 0, x: '-50%', y: '10%' },
+        { opacity: 1, x: '0%', y: '0%', duration: 1.0, ease: 'power2.out' },
+        0.1
       );
-      gsap.fromTo('#s3 .si2',
-        { opacity: 0, x: '70%', y: '15%' },
-        { opacity: 1, x: '0%', y: '0%', duration: 1.9, ease: 'power2.out', delay: 0.3 }
+      anim('#s3 .si2',
+        { opacity: 0, x: '50%', y: '10%' },
+        { opacity: 1, x: '0%', y: '0%', duration: 1.0, ease: 'power2.out' },
+        0.18
       );
       break;
 
     case 3:
       // Diapositiva 4: Escena 4 (Precio mensual)
-      gsap.fromTo('#s4 .st',
-        { opacity: 0, scale: 0.4 },
-        { opacity: 1, scale: 1, duration: 1.9, ease: 'back.out(1.2)' }
+      anim('#s4 .st',
+        { opacity: 0, scale: 0.45 },
+        { opacity: 1, scale: 1, duration: 1.15, ease: 'back.out(1.15)' },
+        0
       );
-      gsap.fromTo('#s4 .si1',
-        { opacity: 0, x: '-60%', rotation: -6 },
-        { opacity: 1, x: '0%', rotation: 0, duration: 2.0, ease: 'power2.out', delay: 0.25 }
+      anim('#s4 .si1',
+        { opacity: 0, x: '-50%', rotation: -5 },
+        { opacity: 1, x: '0%', rotation: 0, duration: 1.0, ease: 'power2.out' },
+        0.12
       );
       break;
 
     case 4:
       // Diapositiva 5: Escena 5 (La idea)
-      gsap.fromTo('#s5 .st',
-        { opacity: 0, scale: 0.7, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 1.8, ease: 'power2.out' }
+      anim('#s5 .st',
+        { opacity: 0, scale: 0.78, y: 18 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.1, ease: 'power2.out' },
+        0
       );
-      gsap.fromTo('#s5 .ss',
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1.5, delay: 0.4, ease: 'power2.out' }
+      anim('#s5 .ss',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out' },
+        0.18
       );
-      gsap.fromTo('#s5 .si1',
-        { opacity: 0, scale: 0.6, rotation: 8 },
-        { opacity: 1, scale: 1, rotation: 0, duration: 2.0, ease: 'power2.out', delay: 0.25 }
+      anim('#s5 .si1',
+        { opacity: 0, scale: 0.7, rotation: 6 },
+        { opacity: 1, scale: 1, rotation: 0, duration: 1.0, ease: 'power2.out' },
+        0.1
       );
-      gsap.fromTo('#s5 .si2',
-        { opacity: 0, x: '-60%' },
-        { opacity: 1, x: '0%', duration: 2.0, ease: 'power2.out', delay: 0.3 }
+      anim('#s5 .si2',
+        { opacity: 0, x: '-50%' },
+        { opacity: 1, x: '0%', duration: 1.0, ease: 'power2.out' },
+        0.18
       );
       break;
 
     case 5:
-      // Diapositiva 6: Estadísticas del sector animadas
-      animateCounters();
+      // Diapositiva 6: Estadísticas del sector
+      if (tl) {
+        tl.call(animateCounters, null, startTime + 0.15);
+      } else {
+        animateCounters();
+      }
       break;
 
     default:
-      // Diapositivas 7 a 13: Animar elementos revelables (.rv)
+      // Diapositivas 7 a 15: Revelar elementos con suavidad
       const currentSlideEl = document.querySelector(`.presentation-slide[data-index="${index}"]`);
       if (currentSlideEl) {
         const reveals = currentSlideEl.querySelectorAll('.rv');
         if (reveals.length > 0) {
-          gsap.fromTo(reveals,
-            { opacity: 0, y: 25 },
-            { opacity: 1, y: 0, duration: 1.3, stagger: 0.16, ease: 'power2.out' }
-          );
+          if (tl) {
+            tl.fromTo(reveals,
+              { opacity: 0, scale: 0.93, y: 18 },
+              { opacity: 1, scale: 1, y: 0, duration: 0.95, stagger: 0.08, ease: 'power2.out' },
+              startTime + 0.05
+            );
+          } else {
+            gsap.fromTo(reveals,
+              { opacity: 0, scale: 0.93, y: 18 },
+              { opacity: 1, scale: 1, y: 0, duration: 0.95, stagger: 0.08, ease: 'power2.out' }
+            );
+          }
         }
       }
       break;
@@ -940,3 +1029,4 @@ function initIACards() {
     });
   });
 }
+
