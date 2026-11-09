@@ -1,9 +1,3 @@
-/**
- * SELVA SUAVE - PRESENTACIÓN HORIZONTAL (MODO POWERPOINT / CANVA)
- * Desplazamiento horizontal de diapositivas a la derecha con flechas de avance/retroceso,
- * manteniendo todas las animaciones, efectos, chatbot y música de fondo.
- */
-
 let currentSlideIndex = 0;
 const TOTAL_SLIDES = 15;
 let isSlideTransitioning = false;
@@ -15,8 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initPresentationDeck();
   initHeaderNav();
   updateWhatsAppStatusTime();
-  // Iniciar en la primera diapositiva con sus animaciones
-  goToSlide(0, true);
+  // Iniciar en la diapositiva solicitada o en la primera
+  const urlParams = new URLSearchParams(window.location.search);
+  const slideParam = urlParams.get('slide');
+  const initialSlide = slideParam !== null ? parseInt(slideParam, 10) : 0;
+  goToSlide(isNaN(initialSlide) ? 0 : initialSlide, true);
 });
 
 function updateWhatsAppStatusTime() {
@@ -215,7 +212,7 @@ function goToSlide(targetIndex, instant = false) {
   }
 
   const outgoingSlide = document.querySelector(`.presentation-slide[data-index="${prevSlideIndex}"]`);
-  const outTexts = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-text, .scene-subtext, .stats-heading, .ps-section-title, .ps-heading, .razones-intro-box') : null;
+  const outTexts = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-text, .scene-subtext, .stats-heading, .ps-stats, .stats-footer, .ps-section-title, .ps-heading, .razones-intro-box') : null;
   const outImages = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-img, .ps-img-wrap') : null;
 
   // Timeline unificada: elimina cualquier conflicto entre CSS y JS, garantizando fluidez total
@@ -415,7 +412,22 @@ function playSlideAnimations(index, instant = false, timeline = null, startTime 
       break;
 
     case 5:
-      // Diapositiva 6: Estadísticas del sector
+      // Diapositiva 6: Estadísticas del sector (animación de ampliación para título, cuerpo de porcentajes y footer)
+      anim('#datos-sector .stats-heading',
+        { opacity: 0, scale: 0.85, y: -12 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.0, ease: 'power2.out' },
+        0
+      );
+      anim('#datos-sector .ps-stats',
+        { opacity: 0, scale: 0.88, y: 15 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.95, ease: 'power2.out' },
+        0.08
+      );
+      anim('#datos-sector .stats-footer',
+        { opacity: 0, scale: 0.9, y: 10 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: 'power2.out' },
+        0.18
+      );
       if (tl) {
         tl.call(animateCounters, null, startTime + 0.15);
       } else {
