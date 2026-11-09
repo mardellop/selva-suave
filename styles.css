@@ -518,16 +518,6 @@ html, body {
   display: inline-block;
 }
 
-.ps-section-title::after {
-  content: '';
-  display: block;
-  width: 45px;
-  height: 2px;
-  background: var(--c-terra);
-  margin-top: 0.6rem;
-  border-radius: 2px;
-}
-
 .ps-section {
   padding: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 4vw, 4rem);
   max-width: 1200px;
@@ -565,14 +555,13 @@ html, body {
   margin-bottom: -5px;
   color: var(--c-dark);
 }
-.ps-heading em { font-style: italic; color: var(--c-green); }
+.ps-heading em { font-style: italic; color: #748366; }
 
 .ps-body {
-  font-size: 1rem; line-height: 1.7;
+  font-size: 1.5rem; line-height: 1.7;
   color: #000; font-weight: 300;
-  max-width: 600px;
   text-align: justify;
-  margin-bottom: 6px;
+  margin-bottom: 15px;
 }
 
 .ps-img {
@@ -1817,27 +1806,123 @@ html, body {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  padding: 0 clamp(16px, 2.5vw, 36px) !important;
+}
+
+.slide-razones-intro .slide-content-wrap {
+  max-width: min(1360px, 94vw) !important;
+}
+
+.razones-intro-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  gap: clamp(1rem, 2.2vw, 2.6rem) !important;
+  position: relative !important;
+}
+
+/* Columnas de imágenes laterales */
+.razones-side-col {
+  flex: 0 0 clamp(190px, 17.5vw, 255px) !important;
+  max-width: 255px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  perspective: 1000px !important;
+}
+
+/* Tarjeta estilo polaroid/editorial para las imágenes */
+.razones-polaroid {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 8px 8px 12px 8px;
+  box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.22),
+              0 8px 18px -4px rgba(44, 53, 41, 0.14),
+              0 0 0 1px rgba(116, 131, 102, 0.18);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.45s ease;
+  will-change: transform, box-shadow;
+  display: block;
+}
+
+.razones-polaroid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
+/* Inclinación deliberada y llamativa */
+.razones-polaroid.rotate-left {
+  transform: rotate(-5deg) translateY(4px);
+}
+
+.razones-polaroid.rotate-right {
+  transform: rotate(5.5deg) translateY(-4px);
+}
+
+.razones-polaroid:hover {
+  box-shadow: 0 28px 56px -10px rgba(0, 0, 0, 0.3),
+              0 12px 24px -5px rgba(45, 122, 93, 0.25);
+}
+
+.razones-polaroid.rotate-left:hover {
+  transform: rotate(-1.5deg) scale(1.04) translateY(-3px);
+}
+
+.razones-polaroid.rotate-right:hover {
+  transform: rotate(1.5deg) scale(1.04) translateY(-3px);
 }
 
 .razones-intro-box {
-  max-width: 820px !important;
-  background: rgba(255, 255, 255, 0.78) !important;
+  flex: 1 1 auto !important;
+  max-width: 740px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
   border: 1.5px solid rgba(116, 131, 102, 0.25) !important;
   border-radius: 24px !important;
-  padding: clamp(2rem, 3.5vw, 3.2rem) clamp(2rem, 4vw, 3.5rem) !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07) !important;
+  padding: clamp(1.8rem, 2.8vw, 3rem) clamp(1.8rem, 3.2vw, 3.2rem) !important;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08) !important;
   text-align: center !important;
   margin: 0 auto !important;
 }
 
 .razones-intro-text {
-  font-size: clamp(0.96rem, 1.2vw, 1.15rem) !important;
-  line-height: 1.72 !important;
-  color: #2C3529 !important;
-  text-align: center !important;
+  font-size: clamp(0.90rem, 1.16vw, 1.12rem) !important;
+  line-height: 1.68 !important;
+  color: #000 !important;
+  text-align: justify;
   margin: 0 auto !important;
+}
+
+@media (max-width: 950px) {
+  .razones-intro-wrapper {
+    flex-wrap: wrap !important;
+    gap: 1.2rem !important;
+  }
+  .razones-side-col {
+    flex: 0 0 clamp(140px, 22vw, 180px) !important;
+    max-width: 180px !important;
+  }
+  .razones-polaroid {
+    padding: 6px 6px 8px 6px !important;
+    border-radius: 14px !important;
+  }
+  .razones-polaroid img {
+    border-radius: 10px !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .razones-side-col {
+    display: none !important;
+  }
 }
 
 /* 2. Split compacto para las 4 razones sin scroll vertical */
@@ -1852,10 +1937,14 @@ html, body {
   padding: 0 !important;
 }
 
-/* En Razón 2 y Razón 4: La imagen queda ceñida y el texto se mete hacia la izquierda */
-#slide-razon-2 .compact-split,
+/* En Razón 4: imagen ceñida y texto más ancho */
 #slide-razon-4 .compact-split {
   grid-template-columns: minmax(280px, 0.72fr) 1.28fr !important;
+}
+
+/* En Razón 2: más espacio para la imagen ya que live-shopping es apaisada (laptop) */
+#slide-razon-2 .compact-split {
+  grid-template-columns: minmax(340px, 1.15fr) 0.85fr !important;
 }
 
 /* En Razón 1: El texto tiene espacio prioritario y la imagen queda a la derecha */
@@ -1882,17 +1971,19 @@ html, body {
 .compact-split .ps-split-title {
   grid-column: 1 / -1 !important;
   margin-bottom: 0.35rem !important;
-  font-size: clamp(1.12rem, 1.6vw, 1.45rem) !important;
+  font-size: clamp(2rem, 2.5vw, 2.5rem) !important;
   line-height: 1.22 !important;
+  color: #000000 !important;
 }
 
 .compact-split .ps-body {
   max-width: none !important;
-  font-size: clamp(0.78rem, 0.94vw, 0.88rem) !important;
-  line-height: 1.44 !important;
-  margin-bottom: clamp(4px, 0.7vh, 7px) !important;
+  font-size: clamp(0.90rem, 1.08vw, 1.05rem) !important;
+  line-height: 1.55 !important;
+  margin-bottom: clamp(5px, 0.9vh, 20px) !important;
   text-align: justify !important;
-  color: #2C3529 !important;
+  color: #000000 !important;
+  font-weight: 400 !important;
 }
 
 /* Eliminación total de espacios vacíos laterales de las imágenes */
@@ -1908,12 +1999,28 @@ html, body {
 .compact-split .split-card-img {
   max-height: clamp(230px, 37vh, 320px) !important;
   width: auto !important;
-  max-width: 100% !important;
+  max-width: 200% !important;
   height: auto !important;
   object-fit: contain !important;
   border-radius: 14px !important;
   box-shadow: 0 14px 35px -10px rgba(0, 0, 0, 0.16) !important;
   display: block !important;
+}
+
+/* Razón 2: live-shopping.png es muy apaisada (1407x768), necesita más ancho y menos restricción de alto */
+#slide-razon-2 .compact-split .split-card-img {
+  max-height: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.22) !important;
+}
+
+#slide-razon-2 .compact-split .ps-img {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .ps-img-wrap {
@@ -1933,18 +2040,19 @@ html, body {
 
 /* Razón 1: Monigote jardinero */
 .monigote-jardinero-img {
-  top: -85px !important;
-  right: -60px !important;
-  width: clamp(210px, 24vw, 290px) !important;
+  top: -100px !important;
+  right: -130px !important;
+  width: clamp(210px, 24vw, 350px) !important;
   height: auto !important;
   animation: monigoteBreathe 3.2s ease-in-out infinite !important;
 }
 
-/* Razón 2: Monigote Live Shopping (apoyado en el centro del móvil) */
+/* Razón 2: Monigote Live Shopping (posicionado fuera de la imagen del laptop) */
 .monigote-live-img {
-  top: -55px !important;
-  left: 50% !important;
-  width: clamp(75px, 8vw, 90px) !important;
+  top: -60px !important;
+  right: -18px !important;
+  left: auto !important;
+  width: clamp(65px, 7vw, 80px) !important;
   height: auto !important;
   animation: monigoteLiveBreathe 3.2s ease-in-out infinite !important;
 }
@@ -1980,10 +2088,10 @@ html, body {
 
 @keyframes monigoteLiveBreathe {
   0%, 100% {
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateX(-50%) translateY(-7px) scale(1.03, 1.05);
+    transform: translateY(-7px) scale(1.03, 1.05);
   }
 }
 
@@ -2039,23 +2147,31 @@ html, body {
   padding: 3px 8px !important;
 }
 
-/* 5. Uso de IAG: 2 diapositivas con 2 tarjetas cada una */
+/* 5. Uso de IAG: 2 diapositivas con 2 tarjetas cada una alargadas hasta las flechas */
+#ia .slide-content-wrap,
+#ia-parte-2 .slide-content-wrap {
+  max-width: min(1560px, calc(100vw - clamp(160px, 13vw, 204px))) !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
 .compact-ia-header {
   text-align: center !important;
-  margin-bottom: 1.1rem !important;
+  margin-bottom: clamp(0.8rem, 1.5vh, 1.2rem) !important;
 }
 
 .ia-two-cards {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 470px)) !important;
-  gap: clamp(1.4rem, 2.6vw, 2.2rem) !important;
-  max-width: 980px !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(1.4rem, 2.6vw, 2.8rem) !important;
+  max-width: 100% !important;
+  width: 100% !important;
   margin: 0 auto !important;
-  justify-content: center !important;
 }
 
 .ia-two-cards .ia-card {
   height: clamp(370px, 53vh, 450px) !important;
+  width: 100% !important;
   position: relative !important;
   perspective: 1200px !important;
   outline: none !important;
@@ -2064,21 +2180,138 @@ html, body {
 
 .ia-two-cards .ia-card-front,
 .ia-two-cards .ia-card-back {
-  padding: clamp(1.2rem, 1.8vw, 1.8rem) clamp(1.2rem, 1.8vw, 1.8rem) !important;
+  padding: clamp(1.3rem, 2vw, 2rem) clamp(1.4rem, 2.4vw, 2.3rem) !important;
 }
 
 .ia-two-cards .ia-card-title {
-  font-size: clamp(1.15rem, 1.45vw, 1.35rem) !important;
+  font-size: clamp(1.15rem, 1.5vw, 1.42rem) !important;
 }
 
 .ia-two-cards .ia-card-back-title {
-  font-size: clamp(1rem, 1.2vw, 1.15rem) !important;
+  font-size: clamp(1.02rem, 1.22vw, 1.2rem) !important;
   margin-bottom: 0.35rem !important;
 }
 
 .ia-two-cards .ia-card-text {
-  font-size: clamp(0.72rem, 0.88vw, 0.81rem) !important;
-  line-height: 1.44 !important;
-  margin-bottom: 0.38rem !important;
+  font-size: clamp(0.74rem, 0.9vw, 0.84rem) !important;
+  line-height: 1.48 !important;
+  margin-bottom: 0.4rem !important;
   text-align: justify !important;
+}
+
+@media (max-width: 900px) {
+  #ia .slide-content-wrap,
+  #ia-parte-2 .slide-content-wrap {
+    max-width: calc(100vw - 32px) !important;
+  }
+  .ia-two-cards {
+    grid-template-columns: 1fr !important;
+    max-width: 520px !important;
+  }
+}
+
+
+/* 6. Diapositiva 15: Autoría y Redes con imágenes laterales */
+#autoria .slide-content-wrap {
+  max-width: min(1360px, 94vw) !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.autoria-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(1rem, 2.5vw, 3rem) !important;
+  position: relative !important;
+  z-index: 2 !important;
+  min-height: 60vh !important;
+}
+
+.autoria-side-col {
+  flex: 0 0 clamp(170px, 16vw, 245px) !important;
+  max-width: 245px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  perspective: 1000px !important;
+}
+
+.autoria-polaroid {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  padding: 8px 8px 12px 8px;
+  box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.22),
+              0 8px 18px -4px rgba(44, 53, 41, 0.14),
+              0 0 0 1px rgba(116, 131, 102, 0.18);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 0.45s ease;
+  will-change: transform, box-shadow;
+  display: block;
+}
+
+.autoria-polaroid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
+.autoria-polaroid.rotate-left {
+  transform: rotate(-5.5deg) translateY(4px);
+}
+
+.autoria-polaroid.rotate-right {
+  transform: rotate(5.5deg) translateY(-4px);
+}
+
+.autoria-polaroid:hover {
+  box-shadow: 0 28px 56px -10px rgba(0, 0, 0, 0.3),
+              0 12px 24px -5px rgba(45, 122, 93, 0.25);
+}
+
+.autoria-polaroid.rotate-left:hover {
+  transform: rotate(-1.5deg) scale(1.04) translateY(-3px);
+}
+
+.autoria-polaroid.rotate-right:hover {
+  transform: rotate(1.5deg) scale(1.04) translateY(-3px);
+}
+
+.autoria-center-content {
+  flex: 1 1 auto !important;
+  max-width: 680px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+@media (max-width: 920px) {
+  .autoria-wrapper {
+    flex-wrap: wrap !important;
+    gap: 1.2rem !important;
+  }
+  .autoria-side-col {
+    flex: 0 0 clamp(130px, 20vw, 170px) !important;
+    max-width: 170px !important;
+  }
+  .autoria-polaroid {
+    padding: 6px 6px 8px 6px !important;
+    border-radius: 14px !important;
+  }
+  .autoria-polaroid img {
+    border-radius: 10px !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .autoria-side-col {
+    display: none !important;
+  }
 }
