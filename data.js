@@ -1,8 +1,3 @@
-/**
- * BOTÁNICA CLUB - DATOS MAESTROS Y LÓGICA DE NEGOCIO
- * Estructura de Causa y Efecto, Datos Demográficos de España y Unit Economics
- */
-
 const BOTANICA_DATA = {
   // 1. EL GANCHO (LA IDEA CENTRAL)
   hook: {
