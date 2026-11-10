@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" type="image/x-icon" href="favicon-selva-suave.png">
 </head>
 <body class="presentation-mode">
@@ -56,6 +56,26 @@
   <div class="slide-counter-badge" id="slide-counter-badge" title="Diapositiva actual">
     <span id="slide-current-num">01</span> <span class="counter-sep">/</span> <span id="slide-total-num">15</span>
   </div>
+
+  <!-- CONTROL FLOTANTE DE ZOOM DE DIAPOSITIVA -->
+  <div class="slide-zoom-pill" id="slide-zoom-pill" aria-label="Controles de zoom">
+    <button type="button" class="zoom-pill-btn" id="zoom-out-btn" aria-label="Alejar" title="Alejar zoom">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+    <button type="button" class="zoom-pill-label" id="zoom-reset-btn" aria-label="Restablecer zoom al 100%" title="Clic para restablecer al 100%">
+      <span id="zoom-pill-percent">100%</span>
+      <span class="zoom-pill-sub">Restablecer</span>
+    </button>
+    <button type="button" class="zoom-pill-btn" id="zoom-in-btn" aria-label="Acercar" title="Acercar zoom">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+  </div>
+
   <div class="presentation-progress" aria-hidden="true">
     <div class="presentation-progress-fill" id="progress-fill"></div>
   </div>
@@ -90,7 +110,7 @@
             <img src="selva-kit-abierto.jpg" alt="Kit Selva suave abierto">
           </div>
           <div class="scene-text st" style="font-size:clamp(2rem, 6vw, 4.5rem);">
-            TU CASA, MÁS VIVA MES A MES<br>RECIBE TU KIT BOTÁNICO MENSUAL<br><em>DILE ADIÓS A BUSCAR ABONOS</em>
+            TU CASA MÁS VIVA CADA MES<br>RECIBE TU KIT BOTÁNICO<br><em>SIN PREOCUPARTE POR ABONOS</em>
           </div>
         </div>
       </section>
@@ -119,7 +139,7 @@
       <!-- ─── SLIDE 4: "PRECIO/MES" ─── -->
       <section class="presentation-slide slide-story" id="slide-4" data-index="3">
         <div class="scene-inner" id="s4">
-          <div class="scene-img si1 behind" style="width:380px; height:480px; max-height:calc(100vh - 140px); left:3%; top:clamp(85px, 14vh, 125px);">
+          <div class="scene-img si1 behind" style="width:380px; height:480px; max-height:calc(100vh - 140px); left:8%; top:clamp(85px, 14vh, 125px);">
             <img src="kit-selva-suave.jpeg" alt="Caja Selva suave + planta">
           </div>
           <div class="scene-text st" style="font-size:clamp(3rem, 10vw, 7rem);">
@@ -184,7 +204,7 @@
               <div class="ps-stat-label">Usa productos fitosanitarios (fungicidas o insecticidas)</div>
             </div>
           </div>
-          <p class="stats-footer" style="font-size: 12.5px;">Fuente: magazine, G. (2025). Radiografía de los consumidores de Plantas y Flores en España. Garden Magazine, Jardinería, Bricolaje y Decoración - GardenMagazine.es</p>
+          <p class="stats-footer" style="font-size: 12.5px;">Fuente: Elaboración propia a partir de Garden Magazine (2025), “Radiografía de los consumidores de Plantas y Flores en España”/p>
         </div>
       </section>
 
@@ -204,7 +224,7 @@
               Razones por las que Selva Suave puede funcionar
             </h2>
             <p class="ps-body rv razones-intro-text">
-              Como veremos, el sector del bricolaje y la decoración tiene demanda y, el consumidor actual exige la transparencia en los precios, una logística y envíos eficientes y una atención post-venta excelente para comprar online. Por ello, Selva suave no pretende vender únicamente kits botánicos, sino responder a esos drivers, integrando la inteligencia artificial, atención a través de WhatsApp, además de hacer Live Shopping para acompañar y asesorar al consumidor en cada etapa del proceso y así acelerar la decisión de compra.
+              Tal y como hemos visto, el sector del bricolaje, jardinería y decoración cuenta con demanda e interés real. Por ello, Selva suave se dirige a un público que le gusta comprar plantas, materiales de cuidado, sustratos y complementos. Sin embargo, a la hora de comprar online este consumidor exige transparencia en los precios, una logística y envíos eficientes y una atención postventa excelente. Por ello, y como veremos a continuación, Selva suave no pretende vender únicamente kits botánicos, sino responder directamente a esos drivers, integrando inteligencia artificial, atención personalizada por WhatsApp, así como implementar Live Shopping y Social Commerce para acompañar y asesorar al usuario en cada etapa del proceso, acelerando así su decisión de compra. En las siguientes diapositivas, se detallan las razones de por qué Selva suave funcionará.
             </p>
           </div>
 
@@ -221,16 +241,19 @@
       <section class="presentation-slide slide-post" id="slide-razon-1" data-index="7">
         <div class="slide-content-wrap">
           <div class="ps-split compact-split">
-            <h3 class="ps-heading ps-split-title rv">1. Porque “hogar y decoración” y “bricolaje y jardín” son categorías de compra consolidadas.</h3>
-            <div>
-              <p class="ps-body rv" style="color: #000; font-size: 30px;">
-                Según los datos del estudio de IAB Spain, el 38% adquiere productos de “Hogar y decoración” de forma online, siendo una de las categorías más compradas por internet. Actualmente, existe un grupo de personas que invierten su dinero en comprar plantas de interior para decorar su hogar.
+            <h3 class="ps-heading ps-split-title rv">1. Porque existe una demanda consolidada para productos de decoración y de cuidado de las plantas.</h3>
+            <div class="ps-text-block">
+              <p class="ps-body rv">
+Según el estudio de ecommerce anual de IAB Spain (2025), las categorías de hogar y decoración (38%) y bricolaje y jardín (25%) se sitúan entre las categorías más compradas de forma online en España. Aunque no se encuentran entre las primeras posiciones, sí que existe un mercado consolidado.
               </p>
               <p class="ps-body rv">
-                Asimismo, el 25% ha comprado productos de bricolaje y jardín en 2025, lo que demuestra que hay interés en adquirir este tipo de producto a través de internet. Los suministros de jardinería tradicionales, como las herramientas o los sacos de tierra de 10-20L, son pesados e incómodos de transportar. Sin embargo, Selva suave elimina este problema, ya que ofrece kits mensuales de reducidas dimensiones y fáciles de transportar.
+Las plantas de interior han pasado de ser un elemento puramente decorativo a convertirse en parte de los hábitos del cuidado del hogar. Ya no se trata de una compra puntual, sino de un estilo de vida que genera una demanda recurrente de productos como sustratos, nutrientes, herramientas y accesorios. Esto es clave para fidelizar al cliente mediante el modelo de suscripción de Selva suave.
               </p>
               <p class="ps-body rv">
-                Por tanto, Selva suave se posiciona en la intersección entre decoración (la planta luce bien) y el cuidado (las herramientas y nutrientes para mantener la planta sana).
+Asimismo, los suministros de jardinería tradicionales, como las herramientas o los sacos de tierra de 10-20L, son pesados e incómodos de transportar. Sin embargo, Selva suave elimina este problema, ya que ofrece kits mensuales de reducidas dimensiones y fáciles de transportar.
+              </p>
+              <p class="ps-body rv">
+Por tanto, la marca aprovecha una demanda ya existente mediante una propuesta especializada que combina productos, asesoramiento y comodidad de compra en un único servicio y se posiciona en la intersección entre decoración y cuidado de plantas, ofreciendo una experiencia adaptada al consumidor digital actual.
               </p>
             </div>
             <div class="ps-img-wrap rv">
@@ -251,7 +274,7 @@
       <section class="presentation-slide slide-post" id="slide-razon-2" data-index="8">
         <div class="slide-content-wrap">
           <div class="ps-split compact-split">
-            <h3 class="ps-heading ps-split-title rv">2. Porque con el Live Shopping se resuelven dudas y se pueden multiplicar las ventas.</h3>
+            <h3 class="ps-heading ps-split-title rv">2. Porque el Live Shopping y el Social Commerce impulsan la conversión y aceleran la decisión de compra.</h3>
             <div class="ps-img-wrap rv">
               <div class="ps-img" style="position:relative; overflow:visible;">
                 <img
@@ -262,15 +285,18 @@
                 <img src="live-shopping.png" alt="Live Shopping" class="split-card-img">
               </div>
             </div>
-            <div>
+            <div class="ps-text-block">
               <p class="ps-body rv">
-                Selva suave va dirigido a un público de entre 25 y 55 años, un segmento que decide el 75% de sus compras basándose en lo que ve en redes sociales. Además, como el 93% de los usuarios realiza compra mientras consume contenido de entretenimiento, el unboxing del kit y el cuidado botánico conecta y convierten casi sin darse cuenta, ya que es un contenido muy visual.
+Selva suave se dirige a un público de entre 25 y 55 años que consume contenido en redes sociales y busca inspiración antes de comprar. Por ello, la marca apuesta por combinar la venta online con estrategias de Live Shopping y Social Commerce, dos estrategias que combinan entretenimiento, interacción y compra en un mismo lugar y que reducen la distancia entre el descubrimiento del producto y la conversión final.
               </p>
               <p class="ps-body rv">
-                Gracias al Live Shopping se puede acortar y facilitar el proceso de compra, ya que se resuelven posibles objeciones al mostrar en tiempo real cómo usar la nutrición líquida del kit o cómo identificar plagas con el chatbot de WhatsApp. Asimismo, el botón flotante estimula la compra impulsiva y puede alcanzar tasas de conversión de hasta el 30%. Durante el tiempo que dure el Live Shopping, se activará una oferta especial para incentivar al consumidor a que compre en ese momento. 
+Durante las emisiones en directo, Selva suave puede mostrar cómo utilizar los productos incluidos en cada kit, resolver dudas en tiempo real y presentar ofertas exclusivas disponibles solo durante la retransmisión. Esta interacción genera cercanía, confianza y reduce las objeciones habituales que surgen antes de la compra. Asimismo, el botón flotante estimula la compra impulsiva y puede generar tasas de conversión significativamente superiores a las de un ecommerce tradicional.
               </p>
               <p class="ps-body rv">
-                También se utilizaría el programa de afiliados de TikTok Shop para colaborar con creadores. De esta forma, la marca puede conectar con el público objetivo e impulsar las ventas.
+Además, al tratarse de un producto muy visual, el formato vídeo es perfecto para captar la atención de la audiencia. El usuario no solo descubre los productos, sino que aprende a utilizarlos y visualiza el resultado final, aumentando el interés y la intención de compra.
+              </p>
+              <p class="ps-body rv">
+Por otro lado, la integración con plataformas como TikTok Shop o Instagram Shopping permite reducir pasos dentro del proceso de compra, ya que el consumidor puede descubrir el producto mientras consume contenido y adquirirlo sin abandonar la red social, favoreciendo la conversión. También, se utilizará el programa de afiliados de TikTok Shop para colaborar con creadores y así conectar con el público objetivo e impulsar las ventas.
               </p>
             </div>
           </div>
@@ -281,20 +307,20 @@
       <section class="presentation-slide slide-post" id="slide-razon-3" data-index="9">
         <div class="slide-content-wrap">
           <div class="ps-split compact-split wa-split">
-            <h3 class="ps-heading ps-split-title rv">3. Porque integra la inteligencia artificial y chatbot en WhatsApp</h3>
+            <h3 class="ps-heading ps-split-title rv">3. Porque la IA y la personalización mejoran la experiencia e impulsan la fidelización.</h3>
           
-            <div>
-              <p class="ps-body" style="text-align: left; margin-top:-6px; margin-bottom:6px; font-weight: bold; font-size: 0.95rem; color: var(--c-green);">
-                (El simulador de chatbot es interactivo)
+            <div class="ps-text-block">
+              <p class="ps-body rv">
+La marca puede implementar automatizaciones similares a las del caso de Vilma Núñez, donde un usuario interesado comenta una palabra clave en redes sociales y recibe automáticamente información personalizada, un descuento o un enlace directo a la compra. Teniendo en cuenta que el 80% de las compras online se realizan por smartphone y que el 93% consume redes sociales, cerrar ventas directamente en el chat de Instagram evita perder clientes al llevarlos a una web externa. Con esto se simplifica el proceso de compra y permite captar usuarios interesados. 
               </p>
               <p class="ps-body rv">
-                Gracias a estas tecnologías, la marca podría optimizar costes operativos y escalar el negocio.
+Asimismo, Selva suave puede utilizar un CRM para registrar información relevante de cada cliente, como las plantas que posee, los productos adquiridos previamente o las consultas realizadas al servicio de atención. Gracias a estos datos se enviarían recomendaciones personalizadas y recordatorios de tareas de mantenimiento.
               </p>
               <p class="ps-body rv">
-                Al igual que en el caso de Vilma Núñez, Selva suave podría publicar un reel en Instagram explicando qué hace la marca y qué incluye el kit botánico. Al final del vídeo, se animaría a la audiencia a comentar la palabra “KIT” para obtener un 15% de descuento. Automáticamente, el usuario recibiría un mensaje privado con un enlace directo al pago. Además, teniendo en cuenta que el 80% de las compras online se realizan por smartphone y que el 93% consume redes sociales, cerrar ventas directamente en el chat de Instagram evita perder clientes al llevarlos a una web externa.
+El kit incluye un código QR para que los clientes contacten con un chatbot en WhatsApp, lo que permite resolver dudas frecuentes relacionadas con el riego, la nutrición o la detección de plagas de forma inmediata. Sin embargo, los casos más complejos se derivan a especialistas para mantener una atención de calidad.
               </p>
               <p class="ps-body rv">
-                El kit incluye también un código QR para que los clientes contacten con un chatbot en WhatsApp. Allí, se resolverán al instante las dudas más frecuentes sobre el cuidado, el riego o la identificación de plagas. La IA se encarga de filtrar y responder estas consultas, y deriva al soporte humano aquellos casos más complejos que necesiten una atención personalizada.
+Finalmente, tal y como demuestra el caso de Starbucks que analizamos en clase, la combinación de CRM, personalización y automatización contribuye a fortalecer la relación con el cliente y fomentar la fidelización. Por ello, la IA y personalización ayudaría a reducir costes operativos sin incrementar proporcionalmente los recursos humanos, mejorar la experiencia del cliente y construir una comunidad.
               </p>
             </div>
             <div class="rv wa-column-wrap">
@@ -348,6 +374,7 @@
                       </button>
                     </div>
                   </div>
+        <div style="font-size: 0.80rem; color: #fff; text-align: center; margin-top: 6px; font-weight: 500;">(El simulador de chatbot es interactivo)</div>
 
                   <div class="wa-body" id="wa-body">
                   </div>
@@ -360,6 +387,7 @@
                         <line x1="15" y1="9" x2="15.01" y2="9"></line>
                       </svg>
                     </button>
+
                     <div class="wa-input-pill">
                       <input type="text" id="wa-input-field" placeholder="Escribe un mensaje o pregunta..." autocomplete="off" />
                       <button type="button" class="wa-footer-icon" aria-label="Adjuntar archivo">
@@ -397,7 +425,7 @@
       <section class="presentation-slide slide-post" id="slide-razon-4" data-index="10">
         <div class="slide-content-wrap">
           <div class="ps-split compact-split">
-            <h3 class="ps-heading ps-split-title rv">4. Porque responde a las principales exigencias y prioridades del consumidor actual.</h3>
+            <h3 class="ps-heading ps-split-title rv">4. Porque responde a las principales prioridades de los consumidores al comprar en un ecommerce.</h3>
             <div class="ps-img-wrap rv">
               <div class="ps-img" style="position:relative; overflow:visible;">
                 <img
@@ -408,18 +436,21 @@
                 <img src="drivers-compra.png" alt="Drivers Compra" class="split-card-img">
               </div>
             </div>
-            <div>
+            <div class="ps-text-block">
               <p class="ps-body rv">
-                Según el estudio anual de ecommerce en España de IAB Spain, existen diferentes factores que impulsan al consumidor a decantarse por una plataforma de comercio electrónico. En primer lugar, los drivers económicos son determinantes para el 71% de los compradores. Por eso, Selva Suave garantiza la transparencia total de precios, eliminando cargos ocultos o costes inesperados.
+                Según el estudio anual de ecommerce de IAB Spain (2025), existen diferentes factores que impulsan al consumidor a decantarse por una plataforma de comercio electrónico. Los consumidores valoran especialmente los factores económicos (71%), la logística y el envío (64%), la atención postventa (63%) y la especialización de la tienda (52%). Selva suave ha sido diseñada precisamente para responder a estos drivers.
               </p>
               <p class="ps-body rv">
-                En segundo lugar, el 64% de los usuarios consideran que la logística y el envío son un aspecto importante para comprar en un ecommerce. Selva suave comercializa un kit con dimensiones estandarizadas, por lo que se simplifica la cadena para asegurar plazos de entrega rápidos y un seguimiento transparente en la última milla.
+Por un lado, la comercialización de kits estandarizados permite ofrecer precios claros y sin costes ocultos. Además, sus dimensiones reducidas simplifican la logística y facilitan entregas más eficientes en comparación con otros productos de jardinería de gran volumen.
               </p>
               <p class="ps-body rv">
-                Asimismo, para el 63% de los consumidores consideran la atención post-venta como un factor decisivo. Por eso, la marca creó Selbot, un asistente de WhatsApp automatizado, respaldado por el soporte continuo de especialistas, lo que garantiza un acompañamiento cercano desde el primer momento.
+Por otro lado, la marca incorpora un asistente automatizado en WhatsApp respaldado por atención humana especializada, lo que permite resolver dudas relacionadas con el cuidado, el riego, la nutrición o la detección de plagas antes, durante y después de la compra.
               </p>
               <p class="ps-body rv">
-                Por último, el 52% de los compradores valoran positivamente los ecommerce que estén altamente especializados en lugar de ser generalistas. Por esta razón, Selva Suave cuenta con una hiperespecialización.
+Finalmente, frente a los marketplaces generalistas, Selva suave está altamente especializada en el cuidado de plantas de interior. Esta especialización le permite ofrecer recomendaciones, contenidos y productos adaptados a las necesidades de un público concreto.
+              </p>
+              <p class="ps-body rv">
+Gracias a todos estos elementos, la marca puede reducir barreras de compra, generar confianza y diferenciarse de los ecommerce generalistas, lo cual aumenta sus posibilidades de éxito en el mercado.
               </p>
             </div>
           </div>
