@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initIACards();
   initPresentationDeck();
   initHeaderNav();
+  initSlideZoom();
   updateWhatsAppStatusTime();
   // Iniciar en la diapositiva solicitada o en la primera
   const urlParams = new URLSearchParams(window.location.search);
@@ -63,12 +64,38 @@ function initPresentationDeck() {
     });
   }
 
-  // 2. Navegación por teclado (Flechas Izquierda / Derecha, Espacio, PageUp / PageDown)
+  // 2. Navegación por teclado (Flechas Izquierda / Derecha, Espacio, PageUp / PageDown) y atajos de zoom
   window.addEventListener('keydown', (e) => {
-    // Si el usuario está escribiendo en el chat de WhatsApp, no interferir con las flechas de texto
+    // Si el usuario está escribiendo en el chat de WhatsApp, no interferir con el texto
     const activeEl = document.activeElement;
     const tag = (activeEl ? activeEl.tagName : '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
+
+    // Atajos de zoom con teclado (Ctrl + '+' / Ctrl + '-' / Ctrl + '0')
+    if (e.ctrlKey) {
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        setZoomLevel(Math.min(3.5, currentSlideZoom + 0.35), window.innerWidth / 2, window.innerHeight / 2, true);
+        return;
+      }
+      if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        setZoomLevel(Math.max(1.0, currentSlideZoom - 0.35), window.innerWidth / 2, window.innerHeight / 2, true);
+        return;
+      }
+      if (e.key === '0') {
+        e.preventDefault();
+        resetCurrentSlideZoom(currentSlideIndex, true);
+        return;
+      }
+    }
+
+    // Tecla Escape para restablecer zoom
+    if (e.key === 'Escape' && currentSlideZoom > 1.0) {
+      e.preventDefault();
+      resetCurrentSlideZoom(currentSlideIndex, true);
+      return;
+    }
 
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
       e.preventDefault();
@@ -85,26 +112,51 @@ function initPresentationDeck() {
     }
   });
 
-  // 3. Navegación con la rueda del ratón (desplazamiento horizontal con debounce)
+  // 3. Navegación con la rueda del ratón y control de zoom con trackpad
   let wheelTimeout = null;
   let wheelAccumulator = 0;
   const WHEEL_THRESHOLD = 45;
 
   window.addEventListener('wheel', (e) => {
-    // Detectar si el usuario está haciendo scroll dentro del slide que tenga scrollbar activa
-    const activeSlide = document.querySelector(`.presentation-slide[data-index="${currentSlideIndex}"]`);
-    if (activeSlide && activeSlide.scrollHeight > activeSlide.clientHeight) {
-      const atTop = activeSlide.scrollTop <= 2;
-      const atBottom = activeSlide.scrollTop + activeSlide.clientHeight >= activeSlide.scrollHeight - 2;
+    // 3.1. DETECCIÓN DE ZOOM CON TRACKPAD (Pinch to Zoom) O CTRL + RUEDA
+    // Cuando el usuario hace zoom in o zoom out con el trackpad, el navegador envía e.ctrlKey = true
+    if (e.ctrlKey) {
+      e.preventDefault(); // Evitar zoom del viewport global del navegador
+      wheelAccumulator = 0;
+      clearTimeout(wheelTimeout);
 
-      // Si está scrolleando verticalmente dentro del slide y aún no llega al tope, permitir scroll interno
-      if ((e.deltaY > 0 && !atBottom) || (e.deltaY < 0 && !atTop)) {
-        return;
-      }
+      // Normalizar deltaY para respuesta ultra suave tanto en trackpad como en ratón
+      let normalizedDelta = -e.deltaY;
+      if (normalizedDelta > 60) normalizedDelta = 60;
+      if (normalizedDelta < -60) normalizedDelta = -60;
+
+      const zoomFactor = Math.exp(normalizedDelta * 0.006);
+      const nextZoom = currentSlideZoom * zoomFactor;
+
+      setZoomLevel(nextZoom, e.clientX, e.clientY, false);
+      return; // ¡NO cambiar de diapositiva jamás durante el zoom!
     }
 
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    wheelAccumulator += delta;
+    // 3.2. SI LA DIAPOSITIVA ESTÁ ZOOMEADA (> 1.05):
+    // El desplazamiento con 2 dedos en trackpad hace pan (mueve el contenido) para inspeccionar sin saltar de slide
+    if (currentSlideZoom > 1.05) {
+      e.preventDefault();
+      wheelAccumulator = 0;
+      clearTimeout(wheelTimeout);
+      panSlide(-e.deltaX * 0.9, -e.deltaY * 0.9);
+      return; // ¡NO pasar de diapositiva mientras se explora en zoom!
+    }
+
+    // 3.3. IGNORAR SCROLL VERTICAL (HACIA ARRIBA O HACIA ABAJO):
+    // El scroll vertical jamás debe avanzar ni retroceder de diapositiva.
+    // Si la diapositiva tiene contenido con scroll vertical interno, el navegador lo desplazará con total naturalidad.
+    if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
+      wheelAccumulator = 0;
+      return;
+    }
+
+    // 3.4. DESPLAZAMIENTO HORIZONTAL EXCLUSIVO (deslizar con 2 dedos horizontalmente en trackpad)
+    wheelAccumulator += e.deltaX;
 
     if (Math.abs(wheelAccumulator) >= WHEEL_THRESHOLD && !isSlideTransitioning) {
       if (wheelAccumulator > 0) {
@@ -119,7 +171,7 @@ function initPresentationDeck() {
     wheelTimeout = setTimeout(() => {
       wheelAccumulator = 0;
     }, 280);
-  }, { passive: true });
+  }, { passive: false });
 
   // 4. Navegación táctil (swipe horizontal en tablets y móviles)
   let touchStartX = 0;
@@ -127,15 +179,17 @@ function initPresentationDeck() {
   const SWIPE_THRESHOLD = 45;
 
   window.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 1) return; // Si es pellizco táctil, no registrar como swipe
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
 
   window.addEventListener('touchend', (e) => {
+    // Si la diapositiva está zoomeada o hubo pellizco, no cambiar de diapositiva
+    if (isTouchPinching || currentSlideZoom > 1.05) return;
     const deltaX = touchStartX - e.changedTouches[0].clientX;
     const deltaY = touchStartY - e.changedTouches[0].clientY;
 
-    // Solo si el gesto es predominantemente horizontal
     if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) >= SWIPE_THRESHOLD) {
       if (deltaX > 0) {
         goToSlide(currentSlideIndex + 1);
@@ -145,6 +199,24 @@ function initPresentationDeck() {
     }
   }, { passive: true });
 }
+
+// Mantener alineación del carrusel y límites de zoom al redimensionar ventana
+window.addEventListener('resize', () => {
+  const track = document.getElementById('presentation-track');
+  if (track && !isSlideTransitioning) {
+    gsap.set(track, { x: -currentSlideIndex * window.innerWidth });
+  }
+  if (currentSlideZoom > 1.0) {
+    const target = getActiveSlideTarget();
+    if (target) {
+      const maxPanX = Math.max(0, (window.innerWidth * (currentSlideZoom - 1)) / 2 + 120);
+      const maxPanY = Math.max(0, (window.innerHeight * (currentSlideZoom - 1)) / 2 + 120);
+      currentPanX = Math.max(-maxPanX, Math.min(maxPanX, currentPanX));
+      currentPanY = Math.max(-maxPanY, Math.min(maxPanY, currentPanY));
+      applySlideZoom(target, currentSlideZoom, currentPanX, currentPanY, false);
+    }
+  }
+});
 
 let currentTransitionTimeline = null;
 
@@ -157,6 +229,11 @@ function goToSlide(targetIndex, instant = false) {
 
   targetIndex = Math.max(0, Math.min(TOTAL_SLIDES - 1, targetIndex));
   if (targetIndex === currentSlideIndex && !instant) return;
+
+  // Si la diapositiva actual tiene zoom, restablecerla antes de la transición
+  if (currentSlideZoom > 1.0) {
+    resetCurrentSlideZoom(currentSlideIndex, instant);
+  }
 
   const prevSlideIndex = currentSlideIndex;
   currentSlideIndex = targetIndex;
@@ -212,8 +289,8 @@ function goToSlide(targetIndex, instant = false) {
   }
 
   const outgoingSlide = document.querySelector(`.presentation-slide[data-index="${prevSlideIndex}"]`);
-  const outTexts = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-text, .scene-subtext, .stats-heading, .ps-stats, .stats-footer, .ps-section-title, .ps-heading, .razones-intro-box') : null;
-  const outImages = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-img, .ps-img-wrap') : null;
+  const outTexts = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-text, .scene-subtext, .stats-heading, .ps-stats, .stats-footer, .ps-section-title, .ps-heading, .razones-intro-box, .ps-text-block, .ps-split > div:not(.ps-img-wrap):not(.wa-column-wrap), .ia-header, .ia-card, .bib-card, .autoria-center-content') : null;
+  const outImages = outgoingSlide ? outgoingSlide.querySelectorAll('.scene-img, .ps-img-wrap, .wa-column-wrap, .autoria-side-col') : null;
 
   // Timeline unificada: elimina cualquier conflicto entre CSS y JS, garantizando fluidez total
   const tl = gsap.timeline({
@@ -740,8 +817,7 @@ function initWhatsApp() {
     await showTypingIndicator(700);
     const lower = cleanText.toLowerCase();
 
-    // Saludos
-    if (/^(hola|buen(as|os)?\s*(d[ií]as|tardes|noches)?|qu[eé]\s*tal|c[oó]mo\s*est[aá]s|hey|buenas)$/i.test(lower.trim()) ||
+if (/^(hola|buen(as|os)?\s*(d[ií]as|tardes|noches)?|qu[eé]\s*tal|c[oó]mo\s*est[aá]s|hey|buenas)$/i.test(lower.trim()) ||
         (lower.startsWith('hola') && lower.length < 15)) {
       appendBotMessage(`
         ¡Hola! Qué alegría saludarte. Soy <strong>Selbot</strong>, tu asistente de cuidado vegetal.<br><br>
@@ -1042,3 +1118,293 @@ function initIACards() {
   });
 }
 
+
+
+/* ==========================================================================
+   MÓDULO DE ZOOM Y PAN INTERACTIVO PARA DIAPOSITIVAS (TRACKPAD & MOUSE)
+   ========================================================================== */
+let currentSlideZoom = 1.0;
+let currentPanX = 0;
+let currentPanY = 0;
+let isPanningSlide = false;
+let panStartX = 0;
+let panStartY = 0;
+let panOriginX = 0;
+let panOriginY = 0;
+let hasDraggedSignificant = false;
+let zoomAnimTimeout = null;
+let gestureInitialZoom = 1.0;
+let touchInitialDist = 0;
+let touchInitialZoom = 1.0;
+let isTouchPinching = false;
+
+function getActiveSlideTarget() {
+  const activeSlide = document.querySelector(`.presentation-slide[data-index="${currentSlideIndex}"]`);
+  if (!activeSlide) return null;
+  return activeSlide.querySelector('.slide-content-wrap, .scene-inner');
+}
+
+function applySlideZoom(target, zoom, panX, panY, animate = false) {
+  if (!target) return;
+  const slide = target.closest('.presentation-slide');
+
+  if (animate) {
+    target.classList.add('zoom-animating');
+    clearTimeout(zoomAnimTimeout);
+    zoomAnimTimeout = setTimeout(() => {
+      target.classList.remove('zoom-animating');
+    }, 300);
+  } else {
+    target.classList.remove('zoom-animating');
+  }
+
+  if (zoom <= 1.01) {
+    target.style.transform = '';
+    if (slide) {
+      slide.classList.remove('slide-zoomed');
+      slide.classList.remove('is-panning');
+    }
+  } else {
+    target.style.transform = `translate3d(${panX.toFixed(1)}px, ${panY.toFixed(1)}px, 0px) scale(${zoom.toFixed(3)})`;
+    if (slide) {
+      slide.classList.add('slide-zoomed');
+    }
+  }
+  updateZoomUI(zoom);
+}
+
+function updateZoomUI(zoom) {
+  const pill = document.getElementById('slide-zoom-pill');
+  const percentText = document.getElementById('zoom-pill-percent');
+  if (!pill) return;
+
+  if (zoom > 1.02) {
+    pill.classList.add('visible');
+    if (percentText) {
+      percentText.textContent = `${Math.round(zoom * 100)}%`;
+    }
+  } else {
+    pill.classList.remove('visible');
+    if (percentText) {
+      percentText.textContent = '100%';
+    }
+  }
+}
+
+function resetCurrentSlideZoom(slideIndex = currentSlideIndex, animate = true) {
+  const slide = document.querySelector(`.presentation-slide[data-index="${slideIndex}"]`);
+  const target = slide ? slide.querySelector('.slide-content-wrap, .scene-inner') : null;
+  currentSlideZoom = 1.0;
+  currentPanX = 0;
+  currentPanY = 0;
+  isPanningSlide = false;
+  if (target) {
+    applySlideZoom(target, 1.0, 0, 0, animate);
+  }
+  if (slide) {
+    slide.classList.remove('slide-zoomed');
+    slide.classList.remove('is-panning');
+  }
+  updateZoomUI(1.0);
+}
+
+function panSlide(deltaX, deltaY) {
+  const target = getActiveSlideTarget();
+  if (!target || currentSlideZoom <= 1.02) return;
+
+  const maxPanX = Math.max(0, (window.innerWidth * (currentSlideZoom - 1)) / 2 + 120);
+  const maxPanY = Math.max(0, (window.innerHeight * (currentSlideZoom - 1)) / 2 + 120);
+
+  currentPanX = Math.max(-maxPanX, Math.min(maxPanX, currentPanX + deltaX));
+  currentPanY = Math.max(-maxPanY, Math.min(maxPanY, currentPanY + deltaY));
+
+  applySlideZoom(target, currentSlideZoom, currentPanX, currentPanY, false);
+}
+
+function setZoomLevel(newZoom, centerX = window.innerWidth / 2, centerY = window.innerHeight / 2, animate = false) {
+  const target = getActiveSlideTarget();
+  if (!target) return;
+
+  const minZoom = 1.0;
+  const maxZoom = 3.5;
+  newZoom = Math.min(maxZoom, Math.max(minZoom, newZoom));
+
+  if (newZoom <= 1.02) {
+    resetCurrentSlideZoom(currentSlideIndex, animate);
+    return;
+  }
+
+  // Zoom centrado hacia la posición del cursor (centerX, centerY)
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  const dx = centerX - cx;
+  const dy = centerY - cy;
+  const ratio = 1 - (newZoom / currentSlideZoom);
+
+  const nextPanX = currentPanX + (dx - currentPanX) * ratio;
+  const nextPanY = currentPanY + (dy - currentPanY) * ratio;
+
+  // Límites para que el contenido permanezca visible
+  const maxPanX = Math.max(0, (window.innerWidth * (newZoom - 1)) / 2 + 120);
+  const maxPanY = Math.max(0, (window.innerHeight * (newZoom - 1)) / 2 + 120);
+  currentPanX = Math.max(-maxPanX, Math.min(maxPanX, nextPanX));
+  currentPanY = Math.max(-maxPanY, Math.min(maxPanY, nextPanY));
+  currentSlideZoom = newZoom;
+
+  applySlideZoom(target, currentSlideZoom, currentPanX, currentPanY, animate);
+}
+
+function initSlideZoom() {
+  const zoomInBtn = document.getElementById('zoom-in-btn');
+  const zoomOutBtn = document.getElementById('zoom-out-btn');
+  const zoomResetBtn = document.getElementById('zoom-reset-btn');
+
+  if (zoomInBtn) {
+    zoomInBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      setZoomLevel(Math.min(3.5, currentSlideZoom + 0.35), window.innerWidth / 2, window.innerHeight / 2, true);
+    });
+  }
+
+  if (zoomOutBtn) {
+    zoomOutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      setZoomLevel(Math.max(1.0, currentSlideZoom - 0.35), window.innerWidth / 2, window.innerHeight / 2, true);
+    });
+  }
+
+  if (zoomResetBtn) {
+    zoomResetBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetCurrentSlideZoom(currentSlideIndex, true);
+    });
+  }
+
+  // Doble clic para acercar o restablecer
+  window.addEventListener('dblclick', (e) => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'button' || tag === 'a' || tag === 'input' || tag === 'textarea' ||
+        e.target.closest('#slide-zoom-pill') || e.target.closest('.site-header') ||
+        e.target.closest('.slide-nav-btn')) return;
+
+    if (currentSlideZoom > 1.05) {
+      resetCurrentSlideZoom(currentSlideIndex, true);
+    } else {
+      setZoomLevel(1.8, e.clientX, e.clientY, true);
+    }
+  });
+
+  // Arrastrar con ratón para mover el contenido zoomeado (Pan)
+  window.addEventListener('mousedown', (e) => {
+    if (currentSlideZoom <= 1.02) return;
+    if (e.button !== 0) return;
+
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'button' || tag === 'a' || tag === 'input' || tag === 'textarea' ||
+        e.target.closest('#slide-zoom-pill') || e.target.closest('.site-header') ||
+        e.target.closest('.slide-nav-btn')) return;
+
+    const activeSlide = document.querySelector(`.presentation-slide[data-index="${currentSlideIndex}"]`);
+    if (!activeSlide || !activeSlide.contains(e.target)) return;
+
+    isPanningSlide = true;
+    panStartX = e.clientX;
+    panStartY = e.clientY;
+    panOriginX = currentPanX;
+    panOriginY = currentPanY;
+    hasDraggedSignificant = false;
+    activeSlide.classList.add('is-panning');
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isPanningSlide || currentSlideZoom <= 1.02) return;
+
+    const dx = e.clientX - panStartX;
+    const dy = e.clientY - panStartY;
+
+    if (Math.hypot(dx, dy) > 5) {
+      hasDraggedSignificant = true;
+    }
+
+    const target = getActiveSlideTarget();
+    if (!target) return;
+
+    const maxPanX = Math.max(0, (window.innerWidth * (currentSlideZoom - 1)) / 2 + 120);
+    const maxPanY = Math.max(0, (window.innerHeight * (currentSlideZoom - 1)) / 2 + 120);
+
+    currentPanX = Math.max(-maxPanX, Math.min(maxPanX, panOriginX + dx));
+    currentPanY = Math.max(-maxPanY, Math.min(maxPanY, panOriginY + dy));
+
+    applySlideZoom(target, currentSlideZoom, currentPanX, currentPanY, false);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isPanningSlide) {
+      isPanningSlide = false;
+      const activeSlide = document.querySelector(`.presentation-slide[data-index="${currentSlideIndex}"]`);
+      if (activeSlide) {
+        activeSlide.classList.remove('is-panning');
+      }
+    }
+  });
+
+  // Evitar clicks accidentales tras arrastrar
+  window.addEventListener('click', (e) => {
+    if (hasDraggedSignificant) {
+      e.stopPropagation();
+      e.preventDefault();
+      hasDraggedSignificant = false;
+    }
+  }, true);
+
+  // Gestos táctiles multitáctiles (pellizcar en pantallas táctiles)
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      isTouchPinching = true;
+      touchInitialDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      touchInitialZoom = currentSlideZoom;
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isTouchPinching && e.touches.length === 2) {
+      if (e.cancelable) e.preventDefault();
+      const currentDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if (touchInitialDist > 0) {
+        const factor = currentDist / touchInitialDist;
+        const nextZoom = Math.min(3.5, Math.max(1.0, touchInitialZoom * factor));
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        setZoomLevel(nextZoom, midX, midY, false);
+      }
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', (e) => {
+    if (e.touches.length < 2) {
+      isTouchPinching = false;
+    }
+  }, { passive: true });
+
+  // Soporte para gestos nativos de Safari Mac / iOS
+  window.addEventListener('gesturestart', (e) => {
+    e.preventDefault();
+    gestureInitialZoom = currentSlideZoom;
+  });
+
+  window.addEventListener('gesturechange', (e) => {
+    e.preventDefault();
+    const nextZoom = Math.min(3.5, Math.max(1.0, gestureInitialZoom * e.scale));
+    setZoomLevel(nextZoom, e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2, false);
+  });
+
+  window.addEventListener('gestureend', (e) => {
+    e.preventDefault();
+  });
+}
