@@ -527,7 +527,6 @@ html, body {
 .ps-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(1rem, 2vw, 2.5rem);
   align-items: center;
   padding: clamp(1.5rem, 1.7vw, 1.7rem) clamp(1.5rem, 4vw, 4rem);
   max-width: 1300px;
@@ -592,7 +591,7 @@ html, body {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding-top: clamp(3.5rem, 4.5vw, 4.5rem);
+  padding-top: clamp(3rem, 4vw, 4rem);
   padding-bottom: 0;
   margin: 0;
 }
@@ -934,7 +933,8 @@ html, body {
 
 .wa-phone {
   width: min(336px, 92vw);
-  height: 445px;
+  height: 450px !important;
+  min-height: 450px !important;
   background: #0b141a;
   border-radius: 25px;
   box-shadow: 
@@ -1675,6 +1675,125 @@ html, body {
   margin: 0 2px;
 }
 
+/* ── CONTROL FLOTANTE DE ZOOM DE DIAPOSITIVA (CANVA / FIGMA STYLE) ── */
+.slide-zoom-pill {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(24px);
+  z-index: 550;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(8, 27, 19, 0.88);
+  border: 1px solid rgba(116, 131, 102, 0.38);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 3px 6px;
+  border-radius: 26px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+  user-select: none;
+}
+
+.slide-zoom-pill.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.zoom-pill-btn {
+  background: transparent;
+  border: none;
+  color: #F5F1EB;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s, color 0.2s;
+}
+
+.zoom-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #A3D9A5;
+  transform: scale(1.1);
+}
+
+.zoom-pill-btn:active {
+  transform: scale(0.92);
+}
+
+.zoom-pill-label {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.zoom-pill-label:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+#zoom-pill-percent {
+  font-family: var(--ff-sans);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
+.zoom-pill-sub {
+  font-family: var(--ff-sans);
+  font-size: 0.56rem;
+  font-weight: 500;
+  color: #A3D9A5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+/* Estado de zoom en diapositiva */
+.presentation-slide.slide-zoomed {
+  overflow: hidden !important;
+  cursor: grab !important;
+  user-select: none;
+}
+
+.presentation-slide.slide-zoomed.is-panning {
+  cursor: grabbing !important;
+}
+
+.presentation-slide.slide-zoomed .slide-content-wrap,
+.presentation-slide.slide-zoomed .scene-inner {
+  pointer-events: auto !important;
+}
+
+.slide-content-wrap,
+.scene-inner {
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.zoom-animating {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+
 /* Barra de progreso inferior */
 .presentation-progress {
   position: fixed;
@@ -1839,7 +1958,7 @@ html, body {
   border-radius: 20px;
   overflow: hidden;
   background: #ffffff;
-  padding: 8px 8px 12px 8px;
+  padding: 5px 5px 5px 5px;
   box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.22),
               0 8px 18px -4px rgba(44, 53, 41, 0.14),
               0 0 0 1px rgba(116, 131, 102, 0.18);
@@ -1947,13 +2066,75 @@ html, body {
   grid-template-columns: minmax(340px, 1.15fr) 0.85fr !important;
 }
 
-/* En Razón 1: El texto tiene espacio prioritario y la imagen queda a la derecha */
+/* En Razón 1: Imagen más grande y destacada con título reposicionado arriba */
+#slide-razon-1 {
+  padding-top: clamp(72px, 8.8vh, 88px) !important;
+  padding-bottom: clamp(15px, 2.5vh, 25px) !important;
+  justify-content: flex-start !important;
+}
+
+#slide-razon-1 .slide-content-wrap {
+  max-width: min(1420px, 95vw) !important;
+  margin-top: clamp(4px, 0.8vh, 12px) !important;
+}
+
 #slide-razon-1 .compact-split {
-  grid-template-columns: 1.28fr minmax(280px, 0.72fr) !important;
+  grid-template-columns: 1.15fr 0.95fr !important;
+  gap: clamp(0.8rem, 1.5vw, 1.8rem) !important;
+  align-items: center !important;
+  padding: 0 clamp(0.5rem, 1.5vw, 1.5rem) !important;
+}
+
+#slide-razon-1 .ps-split-title {
+  margin-top: clamp(-8px, -1vh, 0px) !important;
+  margin-bottom: clamp(0.2rem, 0.5vh, 0.5rem) !important;
+  font-size: clamp(1.85rem, 2.35vw, 2.45rem) !important;
+  line-height: 1.2 !important;
+}
+
+#slide-razon-1 .ps-body {
+  font-size: clamp(0.95rem, 1.1vw, 1.08rem) !important;
+  line-height: 1.52 !important;
+  margin-bottom: clamp(8px, 1.3vh, 10px) !important;
+  color: #000000 !important;
+}
+
+#slide-razon-1 .ps-img-wrap {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+
+#slide-razon-1 .ps-img {
+  position: relative !important;
+  overflow: visible !important;
+  display: inline-block !important;
+  max-width: 100% !important;
+}
+
+#slide-razon-1 .split-card-img {
+  max-height: clamp(400px, 63vh, 560px) !important;
+  width: 100% !important;
+  max-width: 660px !important;
+  height: auto !important;
+  object-fit: contain !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.22) !important;
+  display: block !important;
+margin-left: auto !important;
+}
+
+#slide-razon-1 .monigote-jardinero-img {
+  top: -65px !important;
+  right: -90px !important;
+  width: clamp(170px, 19vw, 250px) !important;
+  height: auto !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  z-index: 5 !important;
 }
 
 /* Espacio vertical optimizado en los 4 slides de razones para eliminar cualquier scroll */
-#slide-razon-1,
 #slide-razon-2,
 #slide-razon-3,
 #slide-razon-4 {
@@ -1964,8 +2145,7 @@ html, body {
 /* Mover el título de la razón 2 y la razón 4 más arriba para evitar solapamiento con el monigote */
 #slide-razon-2 .ps-split-title,
 #slide-razon-4 .ps-split-title {
-  margin-top: clamp(-22px, -2.8vh, -12px) !important;
-  margin-bottom: clamp(1.6rem, 2.8vh, 2.4rem) !important;
+  margin-top: clamp(22px, 2.8vh, 12px) !important;
 }
 
 .compact-split .ps-split-title {
@@ -1974,6 +2154,11 @@ html, body {
   font-size: clamp(2rem, 2.5vw, 2.5rem) !important;
   line-height: 1.22 !important;
   color: #000000 !important;
+}
+
+.ps-text-block {
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .compact-split .ps-body {
@@ -2010,8 +2195,8 @@ html, body {
 /* Razón 2: live-shopping.png es muy apaisada (1407x768), necesita más ancho y menos restricción de alto */
 #slide-razon-2 .compact-split .split-card-img {
   max-height: none !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  width: auto !important;
+  max-width: 100% !important; 
   height: auto !important;
   object-fit: contain !important;
   border-radius: 18px !important;
@@ -2026,8 +2211,20 @@ html, body {
 .ps-img-wrap {
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   width: 100% !important;
+}
+
+#slide-razon-2 .compact-split {
+  display: grid !important;
+  grid-template-columns: 35% 65% !important; 
+  column-gap: 1.5rem !important; 
+  row-gap: 0 !important; 
+  align-items: start !important;
+}
+#slide-razon-2 .compact-split .ps-img-wrap,
+#slide-razon-2 .compact-split .split-card-img {
+  align-self: center !important;
 }
 
 /* 3. Monigotes ajustados proporcionalmente con animación de respirar */
@@ -2049,10 +2246,9 @@ html, body {
 
 /* Razón 2: Monigote Live Shopping (posicionado fuera de la imagen del laptop) */
 .monigote-live-img {
-  top: -60px !important;
-  right: -18px !important;
-  left: auto !important;
-  width: clamp(65px, 7vw, 80px) !important;
+  top: -78px !important;
+  right: 180px !important;
+  width: clamp(120px, 8.5vw, 150px) !important;
   height: auto !important;
   animation: monigoteLiveBreathe 3.2s ease-in-out infinite !important;
 }
@@ -2113,17 +2309,57 @@ html, body {
   }
 }
 
+
+/* Razón 3: sin espacio entre título y texto, ni entre texto y chatbot */
+#slide-razon-3 {
+  padding-top: clamp(30px, 3.8vh, 48px) !important;
+  padding-bottom: clamp(10px, 1.5vh, 20px) !important;
+}
+
+#slide-razon-3 .ps-split-title {
+  margin-bottom: clamp(0.5rem, 0.9vh, 0.9rem) !important;
+  margin-top: 0 !important;
+}
+
+#slide-razon-3 .ps-text-block {
+  margin-top: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+}
+
+#slide-razon-3 .ps-body {
+  font-size: clamp(0.90rem, 1.08vw, 1.05rem) !important;
+  line-height: 1.55 !important;
+  margin-bottom: clamp(3px, 0.4vh, 6px) !important;
+}
+
+#slide-razon-3 .wa-column-wrap {
+  align-self: center !important;
+  margin-top: 0 !important;
+}
+
+#slide-razon-3 .wa-split {
+  align-items: start !important;
+  row-gap: 0 !important;
+}
 /* 4. Razón 3 (Simulador de WhatsApp compacto) */
 .wa-split {
-  grid-template-columns: 1fr 1fr !important;
-  align-items: center !important;
+    display: grid !important;
+    grid-template-columns: 58% 42% !important; 
+    column-gap: 0.5rem !important;
+    align-items: center !important;
 }
 
 .wa-column-wrap {
   display: flex !important;
-  justify-content: center !important;
+  justify-content: flex-end
   align-items: center !important;
   gap: 0 !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  width: fit-content !important;
 }
 
 .compact-wa-phone {
