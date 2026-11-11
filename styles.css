@@ -644,7 +644,7 @@ html, body {
 }
 
 .ia-header .ps-heading {
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
   font-size: clamp(2.4rem, 5vw, 4.2rem);
 }
 
@@ -670,6 +670,7 @@ html, body {
   color: #fff;
   font-weight: 600;
   font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  margin-rop: 20px;
 }
 
 .ia-flip-icon {
@@ -2160,7 +2161,6 @@ margin-left: auto !important;
 .ps-text-block {
   transform-origin: center center;
   will-change: transform, opacity;
-  margin-right: 15px;
 }
 
 .compact-split .ps-body {
@@ -2320,7 +2320,7 @@ margin-left: auto !important;
 
 #slide-razon-3 .ps-split-title {
   margin-bottom: clamp(0.5rem, 0.9vh, 0.9rem) !important;
-  margin-top: 30px !important;
+  margin-top: 0 !important;
 }
 
 #slide-razon-3 .ps-text-block {
@@ -2385,10 +2385,8 @@ margin-left: auto !important;
   padding: 3px 8px !important;
 }
 
-/* 5. Uso de IAG: 2 diapositivas con 2 tarjetas cada una alargadas hasta las flechas */
 /* 5. Uso de IAG: 3 diapositivas con tarjetas alargadas hasta las flechas */
 #ia .slide-content-wrap,
-#ia-parte-2 .slide-content-wrap {
 #ia-parte-2 .slide-content-wrap,
 #ia-parte-3 .slide-content-wrap {
   max-width: min(1560px, calc(100vw - clamp(160px, 13vw, 204px))) !important;
@@ -2442,7 +2440,6 @@ margin-left: auto !important;
 
 @media (max-width: 900px) {
   #ia .slide-content-wrap,
-  #ia-parte-2 .slide-content-wrap {
   #ia-parte-2 .slide-content-wrap,
   #ia-parte-3 .slide-content-wrap {
     max-width: calc(100vw - 32px) !important;
