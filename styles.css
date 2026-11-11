@@ -2257,7 +2257,7 @@ margin-left: auto !important;
 /* Razón 4: Monigote Consumidor (apoyado a la derecha sobre drivers de compra) */
 .monigote-consumidor-img {
   top: -85px !important;
-  left: 75% !important;
+  left: 65% !important;
   width: clamp(180px, 20vw, 230px) !important;
   height: auto !important;
   animation: monigoteConsumidorBreathe 3.2s ease-in-out infinite !important;
