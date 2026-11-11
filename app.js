@@ -1,5 +1,5 @@
 let currentSlideIndex = 0;
-const TOTAL_SLIDES = 15;
+const TOTAL_SLIDES = 16;
 let isSlideTransitioning = false;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -347,9 +347,9 @@ function updateHeaderActiveLink(index) {
   if (index === 4) activeTarget = '4';                     // La idea
   else if (index === 5) activeTarget = '5';                // Datos del sector
   else if (index >= 6 && index <= 10) activeTarget = '6';  // Por qué funciona (Intro + 4 razones)
-  else if (index === 11 || index === 12) activeTarget = '11'; // Uso de la IAG (Partes 1 y 2)
-  else if (index === 13) activeTarget = '13';              // Bibliografía
-  else if (index === 14) activeTarget = '14';              // Autoría
+  else if (index >= 11 && index <= 13) activeTarget = '11'; // Uso de la IAG (Partes 1, 2 y 3)
+  else if (index === 14) activeTarget = '14';              // Bibliografía
+  else if (index === 15) activeTarget = '15';              // Autoría
 
   if (activeTarget) {
     const activeLink = document.querySelector(`.header-right a[data-slide-target="${activeTarget}"]`);
