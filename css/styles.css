@@ -2432,7 +2432,7 @@ margin-left: auto !important;
 }
 
 .ia-two-cards .ia-card-text {
-  font-size: clamp(0.74rem, 0.9vw, 0.84rem) !important;
+  font-size: clamp(1rem, 0.9vw, 0.84rem) !important;
   line-height: 1.48 !important;
   margin-bottom: 0.4rem !important;
   text-align: justify !important;
