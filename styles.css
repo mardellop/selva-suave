@@ -644,7 +644,7 @@ html, body {
 }
 
 .ia-header .ps-heading {
-  margin-bottom: 0.6rem;
+  margin-bottom: 20px;
   font-size: clamp(2.4rem, 5vw, 4.2rem);
 }
 
