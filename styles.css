@@ -657,6 +657,7 @@ html, body {
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   color: #fff;
   margin: 0 auto;
+  margin-top: 15px;
 }
 
 .ia-subtitle-hint {
