@@ -2319,7 +2319,7 @@ margin-left: auto !important;
 
 #slide-razon-3 .ps-split-title {
   margin-bottom: clamp(0.5rem, 0.9vh, 0.9rem) !important;
-  margin-top: 0 !important;
+  margin-top: 30px !important;
 }
 
 #slide-razon-3 .ps-text-block {
