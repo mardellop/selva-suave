@@ -2161,6 +2161,7 @@ margin-left: auto !important;
 .ps-text-block {
   transform-origin: center center;
   will-change: transform, opacity;
+  margin-right: 30px;
 }
 
 .compact-split .ps-body {
