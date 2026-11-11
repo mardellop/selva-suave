@@ -2152,7 +2152,7 @@ margin-left: auto !important;
 
 .compact-split .ps-split-title {
   grid-column: 1 / -1 !important;
-  margin-bottom: 0.35rem !important;
+  margin-bottom: 0.80rem !important;
   font-size: clamp(2rem, 2.5vw, 2.5rem) !important;
   line-height: 1.22 !important;
   color: #000000 !important;
