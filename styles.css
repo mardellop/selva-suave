@@ -2386,8 +2386,11 @@ margin-left: auto !important;
 }
 
 /* 5. Uso de IAG: 2 diapositivas con 2 tarjetas cada una alargadas hasta las flechas */
+/* 5. Uso de IAG: 3 diapositivas con tarjetas alargadas hasta las flechas */
 #ia .slide-content-wrap,
 #ia-parte-2 .slide-content-wrap {
+#ia-parte-2 .slide-content-wrap,
+#ia-parte-3 .slide-content-wrap {
   max-width: min(1560px, calc(100vw - clamp(160px, 13vw, 204px))) !important;
   width: 100% !important;
   margin: 0 auto !important;
