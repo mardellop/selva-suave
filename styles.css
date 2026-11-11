@@ -2443,6 +2443,8 @@ margin-left: auto !important;
 @media (max-width: 900px) {
   #ia .slide-content-wrap,
   #ia-parte-2 .slide-content-wrap {
+  #ia-parte-2 .slide-content-wrap,
+  #ia-parte-3 .slide-content-wrap {
     max-width: calc(100vw - 32px) !important;
   }
   .ia-two-cards {
